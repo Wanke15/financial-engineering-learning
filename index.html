@@ -1,0 +1,1673 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b1f3a">
+<meta name="description" content="金融工程学科系统性学习手册：数学基础、金融产品、衍生品定价、数值方法、风险管理，支持笔记标注与分章节管理。">
+<title>金融工程 · 系统学习手册</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📈</text></svg>">
+<style>
+/* ============ 基础与主题变量 ============ */
+:root{
+  --sbw: 272px;
+  --topbar-h: 56px;
+  --bg:#f4f6fa;
+  --card:#ffffff;
+  --text:#1a2436;
+  --muted:#5b6a83;
+  --line:#e2e8f1;
+  --accent:#1d4ed8;
+  --accent-soft:rgba(29,78,216,.10);
+  --accent-strong:#12308f;
+  --hero1:#0b1f3a;
+  --hero2:#143a6b;
+  --ok:#15803d;
+  --radius:14px;
+  --shadow:0 8px 28px rgba(15,35,70,.10);
+  --shadow-sm:0 2px 10px rgba(15,35,70,.08);
+}
+[data-theme="dark"]{
+  --bg:#0b1220;
+  --card:#111a2c;
+  --text:#e6ecf7;
+  --muted:#94a2ba;
+  --line:#243247;
+  --accent:#5b8cff;
+  --accent-soft:rgba(91,140,255,.15);
+  --accent-strong:#9db9ff;
+  --hero1:#0d1830;
+  --hero2:#152a52;
+  --ok:#4ade80;
+  --shadow:0 8px 28px rgba(0,0,0,.45);
+  --shadow-sm:0 2px 10px rgba(0,0,0,.4);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:calc(var(--topbar-h) + 16px);-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  font-size:16px;line-height:1.75;
+}
+body.lock{overflow:hidden}
+::selection{background:var(--accent-soft)}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+button{font-family:inherit;cursor:pointer}
+img{max-width:100%}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+
+/* ============ 顶栏 ============ */
+.topbar{
+  position:sticky;top:0;z-index:50;height:var(--topbar-h);
+  display:flex;align-items:center;gap:10px;padding:0 14px;
+  background:color-mix(in srgb, var(--card) 88%, transparent);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.icon-btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:38px;height:38px;border-radius:10px;border:1px solid var(--line);
+  background:var(--card);color:var(--text);font-size:17px;position:relative;
+  transition:background .15s;
+}
+.icon-btn:hover{background:var(--accent-soft)}
+#menuBtn{display:none}
+.brand{font-weight:700;font-size:17px;color:var(--text);letter-spacing:.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand .dot{color:var(--accent)}
+.grow{flex:1}
+#noteBadge{
+  position:absolute;top:-5px;right:-5px;min-width:18px;height:18px;padding:0 4px;
+  border-radius:9px;background:#e11d48;color:#fff;font-size:11px;line-height:18px;
+  font-weight:700;text-align:center;font-style:normal;
+}
+
+/* ============ 布局 ============ */
+.layout{display:block}
+#sidebar{
+  position:fixed;left:0;top:var(--topbar-h);bottom:0;width:var(--sbw);z-index:70;
+  background:var(--card);border-right:1px solid var(--line);
+  padding:18px 14px;overflow-y:auto;
+}
+.side-prog{margin-bottom:16px}
+.side-prog .lbl{display:flex;justify-content:space-between;font-size:12.5px;color:var(--muted);margin-bottom:6px}
+.side-prog .lbl b{color:var(--text)}
+.bar{height:7px;border-radius:4px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),#7aa2ff);border-radius:4px;transition:width .4s}
+.side-tip{font-size:12px;color:var(--muted);margin:10px 0 14px;line-height:1.6;background:var(--accent-soft);padding:8px 10px;border-radius:10px}
+#navList{list-style:none;margin:0;padding:0}
+#navList li{margin-bottom:2px}
+#navList a{
+  display:flex;align-items:center;gap:9px;padding:8px 9px;border-radius:10px;
+  color:var(--text);font-size:13.8px;line-height:1.4;
+}
+#navList a:hover{background:var(--accent-soft);text-decoration:none}
+#navList a.active{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.nav-num{
+  flex:none;min-width:26px;text-align:center;font-size:11px;font-weight:700;
+  color:var(--muted);background:var(--line);border-radius:6px;padding:1px 4px;
+  font-variant-numeric:tabular-nums;
+}
+#navList a.active .nav-num{background:var(--accent);color:#fff}
+.nav-t{flex:1;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical}
+.nav-check{opacity:0;color:var(--ok);font-weight:700;transition:opacity .2s}
+.nav-check.on{opacity:1}
+#scrim{
+  position:fixed;inset:0;z-index:60;background:rgba(10,18,32,.5);
+  opacity:0;pointer-events:none;transition:opacity .25s;
+}
+#scrim.show{opacity:1;pointer-events:auto}
+
+main{margin-left:var(--sbw);padding:26px 22px 90px}
+#content,.hero{max-width:840px;margin:0 auto}
+
+/* ============ 首页 hero ============ */
+.hero{
+  background:linear-gradient(135deg,var(--hero1),var(--hero2));
+  color:#f2f6ff;border-radius:20px;padding:34px 30px 30px;margin-bottom:34px;
+  box-shadow:var(--shadow);
+}
+.hero h1{margin:0 0 8px;font-size:30px;line-height:1.3;letter-spacing:1px}
+.hero .sub{margin:0 0 16px;color:#c4d3ef;font-size:15px;max-width:620px}
+.pillrow{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 22px}
+.pill{font-size:12.5px;padding:4px 12px;border-radius:999px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22)}
+.stages{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.stage{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);border-radius:14px;padding:14px}
+.stage b{display:block;font-size:14.5px;margin-bottom:5px;color:#fff}
+.stage span{font-size:12.5px;color:#c4d3ef;line-height:1.6;display:block}
+.guide{
+  margin-top:20px;background:var(--card);color:var(--text);border-radius:16px;
+  padding:18px 20px;border:1px solid var(--line);box-shadow:var(--shadow-sm);
+}
+.guide h2{margin:0 0 10px;font-size:16.5px;color:var(--text)}
+.guide ol{margin:0;padding-left:20px;font-size:13.8px;color:var(--muted)}
+.guide li{margin-bottom:6px}
+.guide li b{color:var(--text)}
+.guide .warnline{margin-top:10px;font-size:12.8px;color:#b45309;background:rgba(245,158,11,.12);padding:8px 12px;border-radius:10px}
+[data-theme="dark"] .guide .warnline{color:#fbbf24}
+
+/* ============ 章节 ============ */
+section.ch{margin-bottom:60px;scroll-margin-top:calc(var(--topbar-h) + 14px)}
+.ch-head{display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap;border-bottom:2px solid var(--line);padding-bottom:12px;margin-bottom:20px}
+.ch-head h2{margin:0;font-size:24px;line-height:1.35;flex:1;min-width:220px;color:var(--text)}
+.chnum{
+  display:inline-block;font-size:12px;font-weight:700;color:var(--accent);
+  background:var(--accent-soft);border-radius:8px;padding:3px 10px;margin-right:10px;
+  vertical-align:3px;letter-spacing:1px;
+}
+.done-toggle{
+  display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);
+  background:var(--card);border:1px solid var(--line);border-radius:999px;
+  padding:5px 13px;user-select:none;cursor:pointer;white-space:nowrap;margin-top:4px;
+}
+.done-toggle input{accent-color:var(--accent);cursor:pointer}
+.done-toggle:has(input:checked){color:var(--ok);border-color:color-mix(in srgb,var(--ok) 40%,transparent);background:color-mix(in srgb,var(--ok) 8%,var(--card))}
+.ch-body h3{font-size:19px;margin:30px 0 12px;color:var(--text);scroll-margin-top:calc(var(--topbar-h) + 14px)}
+.ch-body h3::before{content:"";display:inline-block;width:4px;height:16px;background:var(--accent);border-radius:2px;margin-right:9px;vertical-align:-2px}
+.ch-body h4{font-size:15.5px;margin:20px 0 8px;color:var(--text)}
+.ch-body p{margin:10px 0}
+.ch-body ul,.ch-body ol{margin:10px 0;padding-left:24px}
+.ch-body li{margin:5px 0}
+#content [data-bid]{position:relative;border-radius:6px}
+.has-note::before{
+  content:"✎";position:absolute;left:-1.35em;top:.1em;font-size:13px;color:var(--accent);
+  opacity:.75;
+}
+@media(max-width:960px){.has-note::before{content:"";left:auto}}
+
+/* 公式 */
+.formula{
+  background:var(--card);border:1px solid var(--line);border-left:4px solid var(--accent);
+  border-radius:10px;padding:14px 18px;margin:14px 0;
+  font-family:Georgia,"Times New Roman","STIX Two Text",serif;
+  font-size:17px;line-height:2;overflow-x:auto;white-space:nowrap;
+  box-shadow:var(--shadow-sm);
+}
+.formula .fm-note{font-family:inherit;font-size:13px;color:var(--muted);white-space:normal;display:block;margin-top:4px}
+sub,sup{line-height:0}
+
+/* 提示框 */
+.callout{
+  border-radius:12px;padding:13px 16px;margin:16px 0;font-size:14.5px;line-height:1.8;
+  border:1px solid var(--line);background:var(--card);box-shadow:var(--shadow-sm);
+}
+.callout .co-t{font-weight:700;display:block;margin-bottom:3px;font-size:14px}
+.callout.goal{background:color-mix(in srgb,var(--ok) 7%,var(--card));border-color:color-mix(in srgb,var(--ok) 25%,var(--line))}
+.callout.goal .co-t{color:var(--ok)}
+.callout.tip{background:var(--accent-soft);border-color:color-mix(in srgb,var(--accent) 30%,var(--line))}
+.callout.tip .co-t{color:var(--accent)}
+.callout.warn{background:color-mix(in srgb,#f59e0b 9%,var(--card));border-color:color-mix(in srgb,#f59e0b 35%,var(--line))}
+.callout.warn .co-t{color:#b45309}
+[data-theme="dark"] .callout.warn .co-t{color:#fbbf24}
+
+/* 代码块 */
+pre{
+  background:#0f172a;color:#dbe4f3;border-radius:12px;padding:15px 17px;
+  overflow-x:auto;font-size:13.5px;line-height:1.65;margin:14px 0;
+  border:1px solid #1e293b;
+}
+pre code{font-family:ui-monospace,SFMono-Regular,Consolas,"Courier New",monospace;background:none;padding:0;color:inherit}
+code{background:color-mix(in srgb,var(--accent) 10%,transparent);border-radius:5px;padding:1px 6px;font-size:.88em;font-family:ui-monospace,SFMono-Regular,Consolas,monospace}
+
+/* 表格 */
+.tbl-wrap{overflow-x:auto;margin:14px 0;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow-sm)}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:14px;background:var(--card)}
+th,td{padding:9px 13px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:var(--accent-soft);font-weight:700;white-space:nowrap}
+tr:last-child td{border-bottom:none}
+
+/* 自测 */
+.qa-set{margin:26px 0 6px}
+.qa-set h4{font-size:15.5px;margin:0 0 10px;color:var(--text)}
+details.qa{
+  border:1px solid var(--line);border-radius:12px;background:var(--card);
+  margin:9px 0;box-shadow:var(--shadow-sm);overflow:hidden;
+}
+details.qa summary{
+  cursor:pointer;padding:11px 15px;font-size:14.3px;font-weight:600;list-style:none;
+  display:flex;gap:8px;align-items:flex-start;
+}
+details.qa summary::-webkit-details-marker{display:none}
+details.qa summary::before{content:"Q";flex:none;font-size:12px;font-weight:800;color:#fff;background:var(--accent);border-radius:6px;padding:1px 7px;margin-top:3px}
+details.qa[open] summary::before{content:"A";background:var(--ok)}
+.qa-a{padding:2px 15px 13px;font-size:14px;color:var(--muted);border-top:1px dashed var(--line);margin-top:-1px;padding-top:11px}
+.qa-a b{color:var(--text)}
+
+.ch-pn{display:flex;justify-content:space-between;gap:10px;margin-top:34px;border-top:1px dashed var(--line);padding-top:16px}
+.ch-pn a{
+  font-size:13.5px;padding:8px 14px;border:1px solid var(--line);border-radius:10px;
+  background:var(--card);color:var(--text);
+}
+.ch-pn a:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.ch-pn .sp{flex:1}
+
+/* 笔记高亮 */
+mark.note-hl{
+  background:rgba(245,158,11,.30);color:inherit;border-radius:3px;padding:0 .12em;
+  cursor:pointer;box-shadow:inset 0 -2px 0 rgba(245,158,11,.55);
+}
+mark.note-hl[data-type="q"]{background:rgba(239,68,68,.18);box-shadow:inset 0 -2px 0 rgba(239,68,68,.75)}
+mark.note-hl[data-type="note"]{background:rgba(59,130,246,.18);box-shadow:inset 0 -2px 0 rgba(59,130,246,.6)}
+mark.note-hl:hover{background:rgba(245,158,11,.45)}
+[data-theme="dark"] mark.note-hl{background:rgba(245,158,11,.28)}
+[data-theme="dark"] mark.note-hl[data-type="q"]{background:rgba(239,68,68,.25)}
+[data-theme="dark"] mark.note-hl[data-type="note"]{background:rgba(59,130,246,.28)}
+@keyframes flashbg{0%{background:var(--accent-soft);box-shadow:0 0 0 6px var(--accent-soft)}100%{background:transparent;box-shadow:0 0 0 6px transparent}}
+.flash{animation:flashbg 1.7s ease;border-radius:8px}
+
+/* ============ 浮动按钮 ============ */
+#selBtn{
+  position:fixed;z-index:40;display:none;transform:translate(-50%,0);
+  background:var(--accent);color:#fff;border:none;border-radius:999px;
+  padding:9px 18px;font-size:13.5px;font-weight:600;box-shadow:0 6px 18px rgba(20,50,120,.35);
+}
+#selBtn.show{display:block}
+#selBtn.as-bottom{top:auto !important;left:50% !important;bottom:26px}
+#blkBtn{
+  position:fixed;z-index:40;display:none;width:26px;height:26px;border-radius:50%;
+  border:1px dashed var(--accent);color:var(--accent);background:var(--card);
+  font-size:15px;line-height:1;align-items:center;justify-content:center;padding:0;
+}
+#blkBtn.show{display:inline-flex}
+#blkBtn:hover{background:var(--accent-soft)}
+#backTop{
+  position:fixed;right:22px;bottom:26px;z-index:45;width:44px;height:44px;border-radius:50%;
+  border:1px solid var(--line);background:var(--card);color:var(--text);font-size:19px;
+  box-shadow:var(--shadow-sm);opacity:0;pointer-events:none;transition:opacity .25s;
+}
+#backTop.show{opacity:1;pointer-events:auto}
+
+/* ============ 笔记面板 ============ */
+#notesPanel{
+  position:fixed;top:var(--topbar-h);right:0;bottom:0;width:min(430px,100vw);z-index:80;
+  background:var(--bg);border-left:1px solid var(--line);box-shadow:-10px 0 30px rgba(10,20,40,.15);
+  transform:translateX(105%);transition:transform .28s ease;display:flex;flex-direction:column;
+}
+#notesPanel.open{transform:translateX(0)}
+.pn-head{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--line);background:var(--card)}
+.pn-head h3{margin:0;font-size:16.5px;flex:1}
+.pn-head .cnt{font-size:12px;color:#fff;background:var(--accent);border-radius:999px;padding:1px 9px;font-weight:700}
+.pn-tools{padding:12px 16px 10px;border-bottom:1px solid var(--line);background:var(--card)}
+.pn-tools .search{position:relative}
+.pn-tools input[type="text"]{
+  width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:10px;
+  background:var(--bg);color:var(--text);font-size:13.8px;
+}
+.pn-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:9px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{
+  font-size:12.3px;padding:4px 12px;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);font-weight:600;
+}
+.chip.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.chip.t-key.active{background:#d97706;border-color:#d97706}
+.chip.t-q.active{background:#dc2626;border-color:#dc2626}
+.chip.t-note.active{background:#2563eb;border-color:#2563eb}
+select{
+  padding:6px 10px;border:1px solid var(--line);border-radius:9px;background:var(--card);
+  color:var(--text);font-size:12.8px;max-width:180px;
+}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+.seg button{border:none;background:var(--card);color:var(--muted);font-size:12.3px;padding:5px 11px;font-weight:600}
+.seg button.active{background:var(--accent);color:#fff}
+#pnBidChip{
+  margin-top:9px;font-size:12.3px;color:var(--accent);background:var(--accent-soft);
+  border-radius:8px;padding:5px 10px;display:flex;align-items:center;gap:8px;
+}
+#pnBidChip button{border:none;background:none;color:var(--accent);font-weight:700;padding:0 2px}
+#pnList{flex:1;overflow-y:auto;padding:14px 16px 20px}
+.pn-group{margin-bottom:18px}
+.pn-group-h{
+  font-size:13px;font-weight:700;color:var(--muted);display:flex;align-items:center;gap:8px;
+  margin-bottom:9px;text-transform:none;
+}
+.pn-group-h span{font-size:11px;background:var(--line);color:var(--text);border-radius:999px;padding:0 8px}
+.pn-empty{text-align:center;color:var(--muted);font-size:13.8px;padding:46px 16px;line-height:1.9}
+.note-card{
+  background:var(--card);border:1px solid var(--line);border-radius:12px;
+  padding:12px 14px;margin-bottom:11px;box-shadow:var(--shadow-sm);
+  border-left:4px solid var(--line);
+}
+.note-card.t-key{border-left-color:#f59e0b}
+.note-card.t-q{border-left-color:#ef4444}
+.note-card.t-note{border-left-color:#3b82f6}
+.nc-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+.badge{font-size:11px;font-weight:700;border-radius:6px;padding:1px 8px}
+.badge.t-key{color:#b45309;background:rgba(245,158,11,.16)}
+.badge.t-q{color:#dc2626;background:rgba(239,68,68,.13)}
+.badge.t-note{color:#2563eb;background:rgba(59,130,246,.13)}
+[data-theme="dark"] .badge.t-key{color:#fbbf24}
+[data-theme="dark"] .badge.t-q{color:#f87171}
+[data-theme="dark"] .badge.t-note{color:#93b4ff}
+.nc-ch{font-size:12px;color:var(--muted);font-weight:600}
+.nc-time{font-size:11px;color:var(--muted);margin-left:auto;white-space:nowrap}
+.nc-quote{
+  margin:7px 0;padding:7px 11px;font-size:12.8px;color:var(--muted);
+  border-left:3px solid var(--line);background:color-mix(in srgb,var(--muted) 6%,transparent);
+  border-radius:0 8px 8px 0;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;
+}
+.nc-where{font-size:12px;color:var(--accent);margin:4px 0}
+.nc-text{font-size:13.8px;white-space:pre-wrap;word-break:break-word;line-height:1.7}
+.nc-acts{display:flex;gap:6px;margin-top:9px}
+.mini{
+  font-size:12px;padding:3px 12px;border-radius:8px;border:1px solid var(--line);
+  background:var(--card);color:var(--text);font-weight:600;
+}
+.mini:hover{border-color:var(--accent);color:var(--accent)}
+.mini.danger:hover{border-color:#dc2626;color:#dc2626}
+.pn-foot{
+  display:flex;gap:8px;padding:11px 16px;border-top:1px solid var(--line);background:var(--card);
+}
+.btn{
+  border:1px solid var(--line);background:var(--card);color:var(--text);
+  border-radius:10px;padding:8px 15px;font-size:13.3px;font-weight:600;
+}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.primary:hover{color:#fff;filter:brightness(1.08)}
+.btn.danger{color:#dc2626;border-color:rgba(220,38,38,.4)}
+.btn.danger:hover{background:rgba(220,38,38,.08);color:#dc2626;border-color:#dc2626}
+.btn.ghost{background:transparent}
+
+/* ============ 笔记编辑弹窗 ============ */
+#editorWrap{
+  position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;
+  background:rgba(8,15,30,.5);padding:18px;
+}
+#editorWrap.open{display:flex}
+.modal{
+  background:var(--card);border-radius:18px;width:min(560px,100%);
+  max-height:min(640px,92vh);overflow-y:auto;padding:20px 22px;box-shadow:var(--shadow);
+}
+.modal-head{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.modal-head h3{margin:0;font-size:17px;flex:1}
+.ed-meta{font-size:12.5px;color:var(--muted);margin-bottom:10px}
+#edQuote{
+  margin:0 0 12px;padding:9px 13px;font-size:13px;color:var(--muted);font-style:italic;
+  border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 9px 9px 0;
+  max-height:110px;overflow-y:auto;
+}
+#edTypes{margin:4px 0 10px}
+#edText{
+  width:100%;min-height:130px;resize:vertical;padding:11px 13px;font-size:14px;
+  border:1px solid var(--line);border-radius:11px;background:var(--bg);color:var(--text);
+  font-family:inherit;line-height:1.7;
+}
+#edText:focus{outline:2px solid var(--accent);outline-offset:-1px}
+.ed-actions{display:flex;gap:9px;align-items:center;margin-top:14px}
+
+/* ============ toast ============ */
+#toast{
+  position:fixed;left:50%;bottom:34px;transform:translate(-50%,16px);z-index:120;
+  background:#1e293b;color:#f1f5f9;font-size:13.5px;padding:10px 20px;border-radius:999px;
+  opacity:0;pointer-events:none;transition:all .25s;box-shadow:var(--shadow);max-width:86vw;
+}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* ============ 响应式 ============ */
+@media(max-width:960px){
+  #menuBtn{display:inline-flex}
+  #sidebar{transform:translateX(-105%);transition:transform .28s ease;box-shadow:10px 0 30px rgba(10,20,40,.18)}
+  #sidebar.open{transform:translateX(0)}
+  main{margin-left:0;padding:18px 14px 110px}
+  .stages{grid-template-columns:1fr}
+  .hero{padding:26px 20px}
+  .hero h1{font-size:24px}
+  .ch-head h2{font-size:20.5px}
+  #notesPanel{width:100vw;box-shadow:none}
+}
+@media(max-width:560px){
+  .formula{font-size:15px;padding:11px 13px}
+  .brand{font-size:15.5px}
+  .modal{align-self:flex-end;border-radius:18px 18px 0 0;max-height:92vh;width:100%}
+  #editorWrap{align-items:flex-end;padding:0}
+  #backTop{right:14px;bottom:20px}
+  .ch-pn{flex-direction:column}
+  .ch-pn a{text-align:center}
+}
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  *{transition:none !important;animation:none !important}
+}
+@media print{
+  .topbar,#sidebar,#notesPanel,#scrim,#backTop,#selBtn,#blkBtn,.ch-pn{display:none !important}
+  main{margin:0}
+}
+</style>
+</head>
+<body>
+
+<!-- ================= 顶栏 ================= -->
+<header class="topbar">
+  <button class="icon-btn" id="menuBtn" aria-label="打开目录">☰</button>
+  <a class="brand" href="#top" style="text-decoration:none">金融工程<span class="dot"> · </span>系统学习手册</a>
+  <span class="grow"></span>
+  <button class="icon-btn" id="topNotesBtn" aria-label="打开笔记面板" title="我的笔记">📝<i id="noteBadge" hidden>0</i></button>
+  <button class="icon-btn" id="themeBtn" aria-label="切换深浅色" title="深色 / 浅色">🌙</button>
+</header>
+
+<div class="layout">
+  <!-- ================= 侧边目录 ================= -->
+  <aside id="sidebar" aria-label="章节目录">
+    <div class="side-prog">
+      <div class="lbl"><span>学习进度</span><b id="progText">0 / 0</b></div>
+      <div class="bar"><i id="progBar"></i></div>
+    </div>
+    <div class="side-tip">💡 勾选每章标题旁的「已学完」可跟踪进度；右上角 📝 管理全部笔记。</div>
+    <ul id="navList"></ul>
+  </aside>
+
+  <div id="scrim"></div>
+
+  <!-- ================= 主内容 ================= -->
+  <main>
+    <header class="hero" id="top">
+      <h1>金融工程 · 系统学习手册</h1>
+      <p class="sub">从数学基础到衍生品定价、数值方法与量化实践的一份完整路线图。每个知识点都可以随手标注、记录疑问，笔记统一收纳、分章节回顾。</p>
+      <div class="pillrow">
+        <span class="pill">📚 10 章 + 资源附录</span>
+        <span class="pill">⏱ 建议周期 12 周</span>
+        <span class="pill">✍️ 支持划词笔记</span>
+        <span class="pill">📱 电脑 / 手机自适应</span>
+      </div>
+      <div class="stages">
+        <div class="stage"><b>阶段一 · 打地基（第 1–3 章）</b><span>建立学科全貌，补齐数学与市场基础知识，理解“无套利”这条主线。</span></div>
+        <div class="stage"><b>阶段二 · 学定价（第 4–7 章）</b><span>固定收益、组合理论、远期期货、期权与希腊字母——金融工程的核心定价体系。</span></div>
+        <div class="stage"><b>阶段三 · 上实战（第 8–10 章 + 附录）</b><span>随机过程深化、数值方法与编程实现、风险管理与量化策略，最后给出 12 周计划与书单。</span></div>
+      </div>
+      <div class="guide">
+        <h2>📖 如何使用本手册（先读这里）</h2>
+        <ol>
+          <li><b>划词做笔记：</b>用鼠标（或手机长按）选中正文中任何一段文字，会浮出「<b>＋ 添加笔记</b>」按钮，可标记为 <b>重点 / 疑问 / 笔记</b> 三种类型，被选中的文字会以对应颜色高亮保留。</li>
+          <li><b>对整段做笔记：</b>电脑端把鼠标悬停在任何段落左侧，点出现的「<b>＋</b>」即可对整段做备注；手机端用划词即可。</li>
+          <li><b>查看与编辑：</b>点击正文中彩色高亮文字，或左侧带 ✎ 标记的段落，可直接查看 / 编辑对应笔记。</li>
+          <li><b>统一管理：</b>点击右上角「📝」打开笔记面板——按章节分组浏览、搜索、按类型筛选、一键跳转回原文位置，还能 <b>导出 / 导入 JSON 备份</b>。</li>
+          <li><b>进度跟踪：</b>侧边栏显示总进度；学完一章就勾选该章标题旁的「已学完」。</li>
+          <li><b>继续学习：</b>页面会记住你上次读到的位置和深浅色偏好，下次打开自动恢复。</li>
+        </ol>
+        <div class="warnline">⚠️ 所有笔记保存在<b>当前浏览器的本地存储</b>中（不联网上传）。换浏览器 / 换设备 / 清理浏览器数据会导致笔记丢失，请养成定期「导出备份」的习惯。</div>
+      </div>
+    </header>
+
+    <div id="content">
+
+    <!-- ============ 第 1 章 ============ -->
+    <section class="ch" id="ch1" data-num="01" data-title="金融工程总览">
+      <header class="ch-head">
+        <h2><span class="chnum">第 1 章</span>金融工程总览</h2>
+        <label class="done-toggle"><input type="checkbox" data-done="ch1"><span>已学完</span></label>
+      </header>
+      <div class="ch-body">
+        <div class="callout goal"><span class="co-t">🎯 本章学习目标</span>能说清金融工程的定义与三大支柱；理解“定价—对冲—实现”的典型工作流；知道各章内容在整个体系中的位置。</div>
+
+        <h3>1.1 什么是金融工程</h3>
+        <p>金融工程（Financial Engineering）是<b>综合运用金融理论、数学工具与计算技术，对金融产品进行设计、定价、风险管理与程序化实现</b>的学科。它把金融问题当作工程问题来处理：先抽象建模，再求解定价，最后落地为可交易、可对冲、可监控的方案。</p>
+        <p>学习任何金融工程知识点时，都可以问自己三个问题：这个产品<b>值多少钱</b>（定价）？它的风险<b>从哪里来</b>（风险分解）？如何<b>复制或对冲</b>它（工程实现）？这三个问题贯穿全书。</p>
+        <p>与相邻学科的关系：金融数学偏重随机分析的严格推导；量化投资偏重统计规律与交易策略；金融工程居中，强调<b>产品与工程实现</b>——既要懂模型，也要能把它变成可运行的系统。</p>
+        <div class="callout tip"><span class="co-t">💡 学习心法</span>不要孤立地背公式。每学一个模型，都追问：它的假设是什么？假设不成立时会怎样？现实中如何被校准和对冲？</div>
+
+        <h3>1.2 知识体系：三大支柱</h3>
+        <ul>
+          <li><b>数学支柱：</b>微积分与线性代数、概率统计、随机过程与随机分析、优化与数值方法（对应第 2、8、9 章）。</li>
+          <li><b>金融支柱：</b>市场机制与产品、无套利定价、固定收益、组合理论、风险管理（对应第 3–7、10 章）。</li>
+          <li><b>计算支柱：</b>Python 做原型与回测、C++ 做高性能生产系统、SQL 处理数据、QuantLib 等定价库（对应第 9 章）。</li>
+        </ul>
+        <p>三者是“三脚架”关系：缺任何一条腿，模型都立不起来。数学给出严谨性，金融给出方向感，编程给出生产力。</p>
+
+        <h3>1.3 典型工作流</h3>
+        <ol>
+          <li><b>问题定义：</b>要对冲什么风险？给什么产品定价？赚什么钱？</li>
+          <li><b>假设与建模：</b>选择资产动力学（如几何布朗运动）、市场摩擦假设。</li>
+          <li><b>参数校准：</b>用市场价格反推模型参数（最典型的是隐含波动率）。</li>
+          <li><b>定价 / 回测：</b>解析解、数值方法（树、蒙特卡洛、有限差分）或历史回测。</li>
+          <li><b>风险分析：</b>计算希腊字母、压力测试、情景分析。</li>
+          <li><b>对冲或执行：</b>动态对冲计划、交易执行与成本控制。</li>
+          <li><b>监控与迭代：</b>模型表现监控、偏差归因、迭代改进。</li>
+        </ol>
+        <p>举例：为一款雪球结构产品设计对冲方案，需要波动率模型（第 7–8 章）、蒙特卡洛定价（第 9 章）、希腊字母管理（第 7、10 章），环环相扣。</p>
+
+        <h3>1.4 职业方向</h3>
+        <ul>
+          <li><b>卖方 Quant（Desk Quant）：</b>在投行为交易台开发定价与对冲模型。</li>
+          <li><b>买方 Quant / 研究员：</b>在资管、对冲基金做策略研究与组合构建。</li>
+          <li><b>风控与模型验证：</b>独立复核定价模型、计量市场与信用风险。</li>
+          <li><b>量化开发 / 数据科学：</b>数据管道、回测平台、执行系统。</li>
+        </ul>
+
+        <h3>1.5 本手册的学习地图</h3>
+        <p>第 2–3 章补齐数学与市场地基；第 4–6 章建立固定收益与远期期货的定价直觉；第 7 章是全书的重心（期权与希腊字母）；第 8 章回补随机分析的严谨性；第 9 章把模型变成代码；第 10 章转向风险与策略；附录给出 12 周计划与书单。建议按顺序学习，但第 5 章可与第 4 章互换。</p>
+
+        <div class="qa-set">
+          <h4>自测一下</h4>
+          <details class="qa"><summary>金融工程、金融数学、量化投资三者的侧重有什么不同？</summary><div class="qa-a">金融数学侧重随机分析的<b>理论严谨性</b>（测度、鞅、SDE）；量化投资侧重用统计规律构建<b>可交易的策略</b>；金融工程介于两者之间，强调<b>产品设计与工程实现</b>——把模型变成能定价、能对冲、能上线的完整方案。</div></details>
+          <details class="qa"><summary>为什么说“无套利”是金融工程的核心假设？</summary><div class="qa-a">因为无套利提供了<b>相对定价</b>的基准：只要两种组合在未来所有状态下现金流相同，它们今天的价格必须相等，否则会出现“买低卖高”的无风险利润，市场力量会迅速消除它。于是我们可以由已知价格（如股票、债券）推算未知价格（如衍生品），而无需预测涨跌。第 6、7 章的定价全部建立在这条逻辑上。</div></details>
+        </div>
+      </div>
+      <nav class="ch-pn"><a href="#top">← 开始页</a><span class="sp"></span><a href="#ch2">下一章：数学基础 →</a></nav>
+    </section>
+
+    <!-- ============ 第 2 章 ============ -->
+    <section class="ch" id="ch2" data-num="02" data-title="数学基础：从微积分到随机过程">
+      <header class="ch-head">
+        <h2><span class="chnum">第 2 章</span>数学基础：从微积分到随机过程</h2>
+        <label class="done-toggle"><input type="checkbox" data-done="ch2"><span>已学完</span></label>
+      </header>
+      <div class="ch-body">
+        <div class="callout goal"><span class="co-t">🎯 本章学习目标</span>复习微积分、线性代数、概率统计中与定价直接相关的结论；建立布朗运动与几何布朗运动的直觉；会“使用”（不求证明）伊藤引理。</div>
+
+        <h3>2.1 微积分与线性代数：定价中真正用到的部分</h3>
+        <p>泰勒展开是希腊字母的数学来源：价格对标的物的一阶敏感度叫 Delta，二阶叫 Gamma。</p>
+        <div class="formula">f(x + Δx) ≈ f(x) + f′(x)·Δx + ½·f″(x)·(Δx)²<span class="fm-note">一阶项对应 Delta 对冲后的剩余风险，二阶项就是 Gamma 效应——凸性价值。</span></div>
+        <ul>
+          <li><b>偏导与链式法则：</b>多变量函数求导是伊藤引理和希腊字母的工具，务必熟练。</li>
+          <li><b>线性代数：</b>协方差矩阵、矩阵求逆（组合优化）、特征值分解（主成分分析常用于利率曲线）。</li>
+          <li><b>指数与对数：</b>连续复利 e<sup>rT</sup> 是固定收益与衍生品定价的通用语言。</li>
+        </ul>
+
+        <h3>2.2 概率论：分布、期望与条件期望</h3>
+        <p>重点掌握：期望、方差、协方差、条件期望（E[X|Y] 的塔式法则）、正态分布与对数正态分布、中心极限定理。</p>
+        <div class="formula">若 ln S<sub>T</sub> ~ N(m, s²)，则 E[S<sub>T</sub>] = e<sup>m + s²/2</sup><span class="fm-note">对数正态的均值不等于取对数后的均值直接取指数——差一个 s²/2，这正是 BS 公式里 (r − σ²/2)T 项的来源之一。</span></div>
+        <div class="callout warn"><span class="co-t">⚠️ 易错点</span>股价通常假设为<b>对数正态</b>（不会变成负数），收益率才近似正态。另外方差随时间线性增长，因此<b>波动率按 √t 放大</b>：σ·√T，而不是 σ·T。</div>
+
+        <h3>2.3 数理统计：让参数可信</h3>
+        <p>金融工程的输入参数（收益率均值、波动率、相关系数）都是估计出来的。需要理解：估计量的偏差与方差、最大似然估计、置信区间、假设检验。实践中最常见的错误是把估计值当真值——样本外表现常常打脸，所以第 5、10 章会反复强调估计误差与过拟合。</p>
+
+        <h3>2.4 随机过程入门：从随机游走到布朗运动</h3>
+        <p>随机过程是“随时间演化的随机变量”。金融中最重要的三个对象：</p>
+        <ul>
+          <li><b>马尔可夫性：</b>未来只依赖当前状态，与历史路径无关（弱式市场有效的数学表达）。</li>
+          <li><b>布朗运动 W<sub>t</sub>：</b>随机游走时间间隔趋近于零的极限。性质：从 0 出发、路径连续、独立增量、增量服从 N(0, Δt)。</li>
+          <li><b>几何布朗运动（GBM）：</b>股票价格的标准模型。</li>
+        </ul>
+        <div class="formula">W<sub>t+Δt</sub> − W<sub>t</sub> ~ N(0, Δt)&emsp;&emsp;dS<sub>t</sub> = μ·S<sub>t</sub>·dt + σ·S<sub>t</sub>·dW<sub>t</sub><span class="fm-note">上式：布朗运动的增量；下式：几何布朗运动（GBM），μ 为漂移率，σ 为波动率。</span></div>
+        <p>GBM 的解（蒙特卡洛模拟直接用它）：</p>
+        <div class="formula">S<sub>T</sub> = S<sub>0</sub>·exp[ (μ − σ²/2)·T + σ·√T·Z ]，&ensp;Z ~ N(0,1)</div>
+        <p>由于价格是随机变量，普通链式法则不够用，需要伊藤引理（随机微积分的“链式法则”）：</p>
+        <div class="formula">df = ( ∂f/∂t + μ·S·∂f/∂S + ½·σ²·S²·∂²f/∂S² )·dt + σ·S·(∂f/∂S)·dW<span class="fm-note">比普通链式法则多出的 ½σ²S²f″ 项来自布朗运动的“二次变差”——路径太粗糙，(dW)² 不能忽略而等于 dt。第 8 章会讲清楚这件事。</span></div>
+        <div class="callout tip"><span class="co-t">💡 本阶段要求</span>会背诵伊藤引理的形式，会把它用在 f(S)=ln S 这类替换上，能解释 ½ 项的来源即可。严格的测度论基础可以推迟到第 8 章。</div>
+
+        <div class="qa-set">
+          <h4>自测一下</h4>
+          <details class="qa"><summary>为什么股价建模用对数正态而不用正态？</summary><div class="qa-a">正态分布可取负值，而股价（有限责任）不能为负；对数正态把 ln S 设为正态，保证 S &gt; 0。此外对数正态的右偏特征与长期股价的经验分布更吻合。</div></details>
+          <details class="qa"><summary>伊藤引理比普通链式法则多出的那一项是什么？为什么会出现？</summary><div class="qa-a">多出 ½·σ²S²·∂²f/∂S²。因为布朗运动的路径极不规则，其二次变差 (dW)² 的量级是 dt 而非零，泰勒展开的二阶项无法像确定性微积分那样忽略。</div></details>
+          <details class="qa"><summary>波动率 σ=20% 的资产，1 年和 4 年的“1 倍标准差价格波动”分别是多少（以对数收益计）？</summary><div class="qa-a">分别约 20% 和 40%：波动率随 √T 放大，√1=1、√4=2，故 20%×1=20%，20%×2=40%。方差才与时间成正比。</div></details>
+        </div>
+      </div>
+      <nav class="ch-pn"><a href="#ch1">← 上一章</a><span class="sp"></span><a href="#ch3">下一章：金融市场与产品 →</a></nav>
+    </section>
+
+    <!-- ============ 第 3 章 ============ -->
+    <section class="ch" id="ch3" data-num="03" data-title="金融市场与产品基础">
+      <header class="ch-head">
+        <h2><span class="chnum">第 3 章</span>金融市场与产品基础</h2>
+        <label class="done-toggle"><input type="checkbox" data-done="ch3"><span>已学完</span></label>
+      </header>
+      <div class="ch-body">
+        <div class="callout goal"><span class="co-t">🎯 本章学习目标</span>熟悉市场结构与参与者；能区分远期、期货、期权、掉期四类衍生品并画出盈亏示意；深刻理解无套利与复制定价思想。</div>
+
+        <h3>3.1 市场结构与参与者</h3>
+        <p><b>一级市场</b>发行证券，<b>二级市场</b>交易已发行证券。按组织方式分：<b>交易所市场</b>（标准化合约、中央对手方清算、透明报价）与<b>场外市场 OTC</b>（定制合约、双边信用风险、2008 年后逐步被强制集中清算）。</p>
+        <p>主要玩家：做市商（提供流动性、赚取买卖价差）、套利者（纠正错误定价）、对冲者（转移风险）、投机者（承担风险换取预期收益）、资管机构。四类需求互相成就，市场才能运转。</p>
+
+        <h3>3.2 基础资产</h3>
+        <ul>
+          <li><b>股票：</b>享有红利与剩余索取权，是期权市场的底层资产。</li>
+          <li><b>债券：</b>利率风险 + 信用风险，是固定收益（第 4 章）的主角。</li>
+          <li><b>外汇：</b>两个利率体系连接，远期外汇定价由利率平价决定。</li>
+          <li><b>商品：</b>有存储成本与便利收益（持有实物的隐性好处），期货曲线常出现升水 / 贴水。</li>
+          <li><b>指数：</b>一篮子资产的加权组合，是最常见的期权与期货标的。</li>
+        </ul>
+
+        <h3>3.3 衍生品四大家族</h3>
+        <ul>
+          <li><b>远期（Forward）：</b>双方约定在未来某日以某价格交易某资产。定制化、无逐日盯市、到期一次性结算，存在对手方信用风险。</li>
+          <li><b>期货（Futures）：</b>标准化的远期，在交易所交易，<b>保证金 + 逐日盯市</b>，信用风险几乎被消除；价格与远期在利率与标的相关性不大时近似相等。</li>
+          <li><b>期权（Options）：</b>买方付权利金获得“权利而非义务”。盈亏<b>非对称</b>：买方最大亏损 = 权利金，卖方收取权利金承担被行权义务。</li>
+          <li><b>掉期（Swap）：</b>交换未来现金流序列，最常见的是利率互换（固定换浮动），本质是一串远期的组合。</li>
+        </ul>
+        <p>用途三分法：任何衍生品交易动机都可归为<b>对冲</b>（转移已有风险）、<b>投机</b>（主动承担风险）、<b>套利</b>（利用错误定价）。</p>
+
+        <h3>3.4 无套利与复制：相对定价的灵魂</h3>
+        <p>一价定律：未来现金流完全相同的两个组合，今天必须同价。金融工程的定价套路因此是：<b>用已知价格的基础资产复制衍生品的现金流</b>，复制成本即公平价格。</p>
+        <p>经典例子（无红利、无摩擦）：买入 1 股股票 + 卖出 1 份看涨期权 = 卖出 1 份看跌期权的现金流。由此得到买卖权平价（第 7 章正式推导）。套利者像“搬运工”，任何偏离都会被买低卖高迅速抹平——这就是模型敢用无套利假设的底气。</p>
+        <div class="callout tip"><span class="co-t">💡 关键观念</span>无套利定价是<b>相对定价</b>：它不预测市场涨跌，只回答“给定股票和国债的价格，期权应该值多少”。绝对定价（预测期望收益）是资产配置和策略研究的事。</div>
+
+        <h3>3.5 交易机制与成本</h3>
+        <p>买卖价差、滑点、佣金、保证金占用、冲击成本构成了真实的交易摩擦。做研究时要记住：<b>很多回测里赚钱的策略，扣掉成本就死了</b>。高频策略看价差，低频策略看冲击成本；期权做市商的生死线就是 Gamma 对冲成本与买卖价差的差额。</p>
+
+        <div class="qa-set">
+          <h4>自测一下</h4>
+          <details class="qa"><summary>期货与远期最本质的三个区别？</summary><div class="qa-a"><b>标准化程度</b>（交易所标准化 vs 双边定制）、<b>信用风险处理</b>（保证金 + 逐日盯市 + 中央对手方 vs 承担对手方违约风险）、<b>流动性</b>（可随时平仓 vs 一般持有到期或协商终止）。</div></details>
+          <details class="qa"><summary>“买入股票 + 卖出看涨期权”的到期损益形状像什么？它等价于哪种头寸？</summary><div class="qa-a">到期时若股价高于行权价，股票涨多少、卖出的看涨就亏多少，收益被封顶；若股价低于行权价则随股价下跌。整体形状 = 卖出看跌期权（在无套利与无红利假设下，这就是买卖权平价的内容）。</div></details>
+        </div>
+      </div>
+      <nav class="ch-pn"><a href="#ch2">← 上一章</a><span class="sp"></span><a href="#ch4">下一章：固定收益证券 →</a></nav>
+    </section>
+
+    <!-- ============ 第 4 章 ============ -->
+    <section class="ch" id="ch4" data-num="04" data-title="固定收益证券">
+      <header class="ch-head">
+        <h2><span class="chnum">第 4 章</span>固定收益证券</h2>
+        <label class="done-toggle"><input type="checkbox" data-done="ch4"><span>已学完</span></label>
+      </header>
+      <div class="ch-body">
+        <div class="callout goal"><span class="co-t">🎯 本章学习目标</span>会用现金流贴现给债券定价；掌握 YTM、即期 / 远期利率与期限结构；熟练计算久期与凸性并用于免疫；理解利率互换的定价逻辑。</div>
+
+        <h3>4.1 债券定价与收益率</h3>
+        <p>债券就是一串确定性的现金流（票息 + 本金），价格 = 现金流按贴现率求现值：</p>
+        <div class="formula">P = ∑<sub>t</sub> CF<sub>t</sub> / (1+y)<sup>t</sup> &emsp;（附息券可写为）P = C·[1 − (1+y)<sup>−n</sup>]/y + F·(1+y)<sup>−n</sup><span class="fm-note">C 为票息，F 为面值，y 为到期收益率（YTM）。价格与收益率反向变动。</span></div>
+        <p><b>即期利率</b> s(t)：从今天到 t 的零息收益率；<b>远期利率</b> f(t₁,t₂)：由即期曲线隐含的未来区间利率，满足无套利：(1+s₂)<sup>t₂</sup> = (1+s₁)<sup>t₁</sup>·(1+f)<sup>t₂−t₁</sup>。<b>期限结构（收益率曲线）</b>通常向上倾斜（长端补偿），倒挂常被视为衰退信号。</p>
+
+        <h3>4.2 久期与凸性</h3>
+        <p>久期衡量价格对利率的敏感度，是固定收益风控的核心指标。</p>
+        <div class="formula">D<sub>mac</sub> = (1/P)·∑ t·PV(CF<sub>t</sub>)，&emsp;D<sub>mod</sub> = D<sub>mac</sub> / (1+y)<br>ΔP/P ≈ −D<sub>mod</sub>·Δy + ½·C·(Δy)²<span class="fm-note">麦考利久期是现金流的加权平均到期时间；修正久期是价格弹性；C 为凸性，修正大幅变动下的误差。</span></div>
+        <div class="callout warn"><span class="co-t">⚠️ 易错点</span>① 久期是<b>线性近似</b>，利率大幅波动时必须加凸性修正；② 零息债券的久期 = 其期限（现金只发生在到期日）；③ 久期单位要注意（年 vs 百分比弹性，取决于用 D<sub>mac</sub> 还是 D<sub>mod</sub>）。</div>
+        <p><b>免疫策略：</b>让资产久期等于负债久期，利率变动时资产负债价值同涨同跌，净头寸对平行移动的一阶风险为零——这就是养老金与保险资产负债管理的基石。</p>
+
+        <h3>4.3 收益率曲线的构建（Bootstrap）</h3>
+        <p>市场报出的是附息国债 / 互换价格，而定价需要零息（即期）曲线。Bootstrap 思路：用短端零息券直接得到 s(t₁)；再用下一个附息券的价格，把未知的长端即期利率解出来，由短及长逐个“剥”出整条曲线。实际中还要做插值（分段线性 / 三次样条）与曲线平滑。</p>
+
+        <h3>4.4 利率衍生品：互换与期权概览</h3>
+        <p><b>利率互换（IRS）：</b>一方付固定换浮动。定价时固定端 = 一张附息债券的现值；浮动端在重置日价值回到面值，因此定价与曲线构建紧密相连。<b>互换利率</b>就是使 swap 初始价值为零的平价票息。</p>
+        <div class="formula">Swap 价值（付固定收浮动方）≈ [ ∑ k·τ<sub>i</sub>·DF(t<sub>i</sub>) + DF(t<sub>n</sub>) − 1 ] · N<span class="fm-note">k 为互换利率，DF 为贴现因子，N 为名义本金。浮动端现值 = N − 末期贴现因子 × N。</span></div>
+        <p><b>利率上限 / 下限（Cap / Floor）：</b>本质是一串利率期权（caplet / floorlet），用类似 Black 公式定价；<b>浮动利率票据（FRN）</b>在重置日价格回到面值，久期近似等于到下一个重置日的期限。</p>
+
+        <div class="qa-set">
+          <h4>自测一下</h4>
+          <details class="qa"><summary>为什么久期越长的债券对利率越敏感？凸性为什么总是“好事”？</summary><div class="qa-a">久期长意味着现金流的“加权平均回收时间”长，贴现率变动会放大远期现金流的现值变化。凸性为正是债券价格的几何性质：利率下行时价格涨得更多、上行时跌得更少，因此其他条件相同时凸性大的债券更贵——它不是免费的，市场已经给它定了价。</div></details>
+          <details class="qa"><summary>一家保险公司 10 年后要赔付 1 亿元，如何用债券免疫？</summary><div class="qa-a">买入久期等于 10 年（负债久期）且现值等于赔付现值的债券组合。利率平行移动时资产与负债价值同步变化，净敞口的一阶利率风险为零；实践中还需定期再平衡并关注非平行移动（用关键利率久期管理曲线风险）。</div></details>
+        </div>
+      </div>
+      <nav class="ch-pn"><a href="#ch3">← 上一章</a><span class="sp"></span><a href="#ch5">下一章：投资组合理论 →</a></nav>
+    </section>
+
+    <!-- ============ 第 5 章 ============ -->
+    <section class="ch" id="ch5" data-num="05" data-title="投资组合理论">
+      <header class="ch-head">
+        <h2><span class="chnum">第 5 章</span>投资组合理论</h2>
+        <label class="done-toggle"><input type="checkbox" data-done="ch5"><span>已学完</span></label>
+      </header>
+      <div class="ch-body">
+        <div class="callout goal"><span class="co-t">🎯 本章学习目标</span>掌握均值-方差框架与有效前沿；会推导和使用 CAPM；理解多因子模型的思想；了解常见风险度量与估计陷阱。</div>
+
+        <h3>5.1 均值-方差框架（Markowitz, 1952）</h3>
+        <p>输入是资产的期望收益向量 μ 和协方差矩阵 Σ。组合收益与风险：</p>
+        <div class="formula">R<sub>p</sub> = w<sup>T</sup>μ，&emsp;σ<sub>p</sub>² = w<sup>T</sup>Σw = ∑<sub>i,j</sub> w<sub>i</sub>·w<sub>j</sub>·σ<sub>ij</sub><span class="fm-note">风险取决于协方差而非单个方差——分散化的数学本质。</span></div>
+        <p>两资产情形能看清分散化力量：σ<sub>p</sub>² = w₁²σ₁² + w₂²σ₂² + 2w₁w₂ρσ₁σ₂，当相关系数 ρ &lt; 1 时，组合波动率小于成分波动率的加权平均。<b>有效前沿</b>是每个收益水平下方差最小的组合集合；全局最小方差组合是前沿最左端；引入无风险资产后，前沿变成一条直线（资本市场线），切点组合即“市场组合”——这就是<b>两基金分离定理</b>。</p>
+
+        <h3>5.2 CAPM 与 Beta</h3>
+        <div class="formula">E(R<sub>i</sub>) = r<sub>f</sub> + β<sub>i</sub>·( E(R<sub>m</sub>) − r<sub>f</sub> )，&emsp;β<sub>i</sub> = Cov(R<sub>i</sub>, R<sub>m</sub>) / Var(R<sub>m</sub>)<span class="fm-note">只有系统性风险（β）获得补偿；可分散的特质风险不产生超额收益。</span></div>
+        <p>CAPM 的现实用法不是“预测收益”，而是<b>业绩归因的基准</b>：实际收益超出 CAPM 预测的部分记为 α（詹森阿尔法），衡量管理人的真实能力。</p>
+
+        <h3>5.3 多因子模型与 APT</h3>
+        <p>套利定价理论（APT）把收益分解为多个因子的线性组合。实践中的经典因子：市场、规模（SMB）、价值（HMV）、动量、质量、低波动等（Fama-French 三因子 / 五因子体系）。因子模型的两大用途：<b>风险归因</b>（组合风险暴露在哪些因子上）与<b>收益归因</b>（赚的是 alpha 还是因子 beta 的钱）。</p>
+        <div class="callout warn"><span class="co-t">⚠️ 估计陷阱</span>① 协方差矩阵用 N 个资产的历史收益估计时，样本长度必须远大于 N，否则矩阵病态甚至不正定；② 均值估计的误差极大（年化收益估计的标准误可能是估计值本身的量级）。常用应对：因子模型降维、收缩估计（Ledoit-Wolf）、依赖经济逻辑而非纯数据挖掘。</div>
+
+        <h3>5.4 风险度量</h3>
+        <ul>
+          <li><b>波动率 / 方差：</b>对称地惩罚上下波动，简单但不符合对亏损的直觉。</li>
+          <li><b>VaR：</b>给定置信水平下的最大可能损失（第 10 章详解）。</li>
+          <li><b>ES（CVaR）：</b>尾部条件期望损失，满足次可加性（一致性风险度量）。</li>
+          <li><b>最大回撤：</b>从业者最关心的“最深坑”，与恢复期一起刻画路径风险。</li>
+        </ul>
+        <p>注意：危机时刻资产相关性普遍上升，分散化在最需要它的时候最弱——这正是尾部对冲存在的理由。</p>
+
+        <div class="qa-set">
+          <h4>自测一下</h4>
+          <details class="qa"><summary>为什么 CAPM 说“可分散的风险不值得补偿”？</summary><div class="qa-a">特质风险可以通过持有大量低成本分散的组合消除。若市场为它支付溢价，套利者就可以构建分散组合无风险地赚取该溢价，竞争会把溢价压到零。因此只有无法分散的系统性风险（β）获得风险溢价。</div></details>
+          <details class="qa"><summary>两个波动率相同的资产，如何判断哪一个对组合风险贡献更大？</summary><div class="qa-a">看它与组合（其余资产）的<b>协方差 / 相关性</b>：风险贡献 ∝ w<sub>i</sub>·Cov(R<sub>i</sub>, R<sub>p</sub>)。与组合其余部分相关性高的资产，即便自身波动相同，对组合风险的边际贡献更大。</div></details>
+        </div>
+      </div>
+      <nav class="ch-pn"><a href="#ch4">← 上一章</a><span class="sp"></span><a href="#ch6">下一章：远期与期货定价 →</a></nav>
+    </section>
+
+    <!-- ============ 第 6 章 ============ -->
+    <section class="ch" id="ch6" data-num="06" data-title="远期与期货定价">
+      <header class="ch-head">
+        <h2><span class="chnum">第 6 章</span>远期与期货定价</h2>
+        <label class="done-toggle"><input type="checkbox" data-done="ch6"><span>已学完</span></label>
+      </header>
+      <div class="ch-body">
+        <div class="callout goal"><span class="co-t">🎯 本章学习目标</span>掌握持有成本模型及各种收益 / 成本情形下的远期定价公式；分清“远期价格”与“远期价值”；理解期货与远期的差异及基差概念。</div>
+
+        <h3>6.1 连续复利与记号</h3>
+        <p>衍生品定价统一使用连续复利：终值 = e<sup>rT</sup>，现值 = e<sup>−rT</sup>。离散复利 r<sub>m</sub>（年复 m 次）的换算：e<sup>r</sup> = (1 + r<sub>m</sub>/m)<sup>m</sup>。记 S₀ 为现货价，F₀ 为 T 时刻到期的远期价格，q 为红利率，I 为已知收入现值。</p>
+
+        <h3>6.2 持有成本模型（无套利定价）</h3>
+        <p>构造套利组合检验：“借钱买现货 + 卖出远期”应与“直接持有远期”等价，令两者无差异即得远期价格：</p>
+        <div class="formula">无收益资产：F₀ = S₀·e<sup>rT</sup>&emsp;已知红利率：F₀ = S₀·e<sup>(r−q)T</sup>&emsp;已知收入：F₀ = (S₀ − I)·e<sup>rT</sup><br>商品（存储成本 u，便利收益 y）：F₀ = S₀·e<sup>(r + u − y)T</sup><span class="fm-note">若市场远期价高于公式值，卖出远期、借钱买现货套利；反之反向操作。</span></div>
+        <div class="callout tip"><span class="co-t">💡 记忆口诀</span>持有资产<b>多得到</b>的（红利、便利收益）会<b>压低</b>远期价格；<b>多付出</b>的（资金成本、仓储保险）会<b>抬高</b>远期价格。指数 Divisor、黄金租赁利率等现实量都能用这套逻辑解释。</div>
+
+        <h3>6.3 远期价格 ≠ 远期价值</h3>
+        <p><b>远期价格 F₀</b> 是使合约签约时价值为零的交割价；<b>远期价值 f</b> 是已签约合约在当前时刻的净现值。设 K 为签约时的交割价，则多头当前价值：</p>
+        <div class="formula">f = S·e<sup>−q·τ</sup> − K·e<sup>−r·τ</sup>&emsp;（无红利时 q=0）<span class="fm-note">签约瞬间 f=0；之后标的移动、时间流逝，f 不断变化——这就是远期头寸的盯市价值。</span></div>
+
+        <h3>6.4 期货与远期的差异、基差</h3>
+        <p>理论上，若利率与标的价格正相关，逐日盯市使期货价格略高于远期（盈利能更早再投资）；实践中差异通常很小。<b>基差</b> = 现货价 − 期货价，随到期日临近收敛于零（收敛到交割价）；基差风险是对冲不完全的来源：用期货对冲现货，损益 = 现货变化 + 基差变化。选择对冲工具时要注意<b>到期日匹配、标的匹配、数量（久期 / Beta 调整）匹配</b>。</p>
+
+        <div class="qa-set">
+          <h4>自测一下</h4>
+          <details class="qa"><summary>股指期货经常出现“贴水”（期货价低于现货），用本章知识解释一个主要原因。</summary><div class="qa-a">F = S·e<sup>(r−q)T</sup>，q 是股息率。当分红率较高或市场对分红预期高时 q 上升，远期价格被压低；再叠加对冲需求（多头套保不足、空头情绪）等因素，期货相对现货出现贴水。贴水幅度 ≈ 持有成本中的净收益项。</div></details>
+          <details class="qa"><summary>黄金现货 1800 美元，1 年期利率 3%，存储成本 0.5%，无便利收益，1 年期理论期货价是多少？</summary><div class="qa-a">F = 1800·e<sup>(0.03+0.005)×1</sup> ≈ 1800×1.0356 ≈ 1864 美元。资金成本与存储成本抬高远期价。</div></details>
+        </div>
+      </div>
+      <nav class="ch-pn"><a href="#ch5">← 上一章</a><span class="sp"></span><a href="#ch7">下一章：期权定价与希腊字母 →</a></nav>
+    </section>
+
+    <!-- ============ 第 7 章 ============ -->
+    <section class="ch" id="ch7" data-num="07" data-title="期权定价与希腊字母">
+      <header class="ch-head">
+        <h2><span class="chnum">第 7 章</span>期权定价与希腊字母</h2>
+        <label class="done-toggle"><input type="checkbox" data-done="ch7"><span>已学完</span></label>
+      </header>
+      <div class="ch-body">
+        <div class="callout goal"><span class="co-t">🎯 本章学习目标（全书核心）</span>熟练运用买卖权平价；掌握二叉树的复制与风险中性定价逻辑；牢记 Black-Scholes 公式与五个希腊字母；理解隐含波动率与波动率微笑的交易含义。</div>
+
+        <h3>7.1 期权基础与买卖权平价</h3>
+        <p>看涨 / 看跌期权各有欧式（到期才能行权）与美式（随时可行权）两种。关键概念：<b>内在价值</b>（立即行权的价值）与<b>时间价值</b>（权利金减内在价值）。价格上下界（欧式、无红利）：max(S₀ − Ke<sup>−rT</sup>, 0) ≤ c ≤ S₀。</p>
+        <div class="formula">买卖权平价：C − P = S₀ − K·e<sup>−rT</sup><span class="fm-note">由“股票 + 看跌 = 看涨 + 现金”的复制关系得到。连续红利率版本：C − P = S₀·e<sup>−qT</sup> − K·e<sup>−rT</sup>。它必须严格成立，否则有免费午餐。</span></div>
+        <div class="callout warn"><span class="co-t">⚠️ 经典考点</span>无红利股票的<b>美式看涨不该提前行权</b>：行权会损失时间价值，且现金 Ke<sup>−rT</sup> 继续生息比行权更优。而美式看跌可能提前行权（深度价内时利息收益超过时间价值）。</div>
+
+        <h3>7.2 二叉树：风险中性定价的直觉来源</h3>
+        <p>单期二叉树里，用 Δ 份股票 + 现金 B 无风险地复制期权 payoff，解出期权价格；整理后得到一个漂亮的解释——期权价格 = <b>风险中性期望的贴现</b>：</p>
+        <div class="formula">u = e<sup>σ·√Δt</sup>，&ensp;d = 1/u，&ensp;p = ( e<sup>r·Δt</sup> − d ) / ( u − d )<br>c = e<sup>−r·Δt</sup>·[ p·c<sub>u</sub> + (1−p)·c<sub>d</sub> ]<span class="fm-note">p 是让股票预期收益恰好等于无风险利率的“等价鞅测度”概率，与真实涨跌概率无关。多期树逐层倒推；美式期权在每个节点取 max(行权价值, 继续持有价值)。</span></div>
+
+        <h3>7.3 Black-Scholes 公式</h3>
+        <p>假设：无摩擦市场、常数 r 与 σ、价格服从 GBM（无跳）、欧式、无红利。令 Δt→∞ 细分二叉树即收敛到 BS 公式：</p>
+        <div class="formula">c = S₀·N(d₁) − K·e<sup>−rT</sup>·N(d₂)<br>p = K·e<sup>−rT</sup>·N(−d₂) − S₀·N(−d₁)<br>d₁ = [ ln(S₀/K) + (r + σ²/2)·T ] / (σ·√T)，&emsp;d₂ = d₁ − σ·√T<span class="fm-note">直觉：N(d₂) ≈ 风险中性世界里到期价内行权的概率；N(d₁) 是 Delta（对冲所需股票份数）。第二项是行权时支付 K 的现值。</span></div>
+        <div class="callout warn"><span class="co-t">⚠️ 模型的局限</span>真实市场有肥尾、跳空、随机波动率，BS 假设并不成立——但它仍是行业标准语言：<b>交易员用“波动率”而非“价格”给期权报价</b>（隐含波动率），模型错误被吸收进微笑曲线。</div>
+
+        <h3>7.4 希腊字母与动态对冲</h3>
+        <div class="formula">Δ（Delta）= ∂c/∂S：看涨 = N(d₁)，看跌 = N(d₁) − 1<br>Γ（Gamma）= ∂²c/∂S² = φ(d₁) / (S₀·σ·√T)<br>Vega = ∂c/∂σ = S₀·φ(d₁)·√T<br>Θ（Theta）= ∂c/∂t：看涨 ≈ −S₀·φ(d₁)·σ / (2√T) − r·K·e<sup>−rT</sup>·N(d₂)<br>ρ（Rho）= ∂c/∂r = K·T·e<sup>−rT</sup>·N(d₂)<span class="fm-note">φ(·) 为标准正态密度。看涨期权的 Theta 通常为负（时间流逝损耗价值）。</span></div>
+        <p><b>动态对冲的权衡：</b>Delta 中性化后仍暴露于 Gamma；标的大幅跳动时需要频繁再平衡（Gamma 交易），再平衡的成本与买卖价差、滑点直接相关。<b>做多期权 = 做多 Gamma 但付出 Theta</b>；做空期权反之。Vega 敞口则是对波动率本身观点的表达。期权做市商的日常就是在这几个字母之间寻找最优平衡。</p>
+
+        <h3>7.5 波动率：历史、隐含与微笑</h3>
+        <ul>
+          <li><b>历史（已实现）波动率：</b>由过去收益计算，可用 EWMA / GARCH 加权以反映聚集效应。</li>
+          <li><b>隐含波动率：</b>让 BS 模型价等于市场价的 σ。它包含市场对未来波动的预期与风险溢价。</li>
+          <li><b>波动率微笑 / 偏斜：</b>同一到期日不同行权价的隐含波动率不同。股指期权呈“偏斜”：低行权价（虚值 put）隐含波动率更高——市场为崩盘尾部保险定价。外汇则常见对称微笑。</li>
+          <li><b>期限结构：</b>隐含波动率随到期日变化；事件（财报、议息）会在短期限上形成尖峰。</li>
+          <li><b>VIX：</b>标普 500 期权隐含波动率的加权指数，即“恐慌指数”。</li>
+        </ul>
+
+        <h3>7.6 奇异期权一瞥</h3>
+        <p><b>障碍期权</b>（敲入 / 敲出，价格触碰障碍即生效或失效，比普通期权便宜）；<b>亚式期权</b>（按均价结算，降低操纵与波动，常用于大宗商品套保）；<b>数字期权</b>（二元赔付）；以及结构化产品中常见的鲨鱼鳍、雪球等——它们大多可以用第 9 章的蒙特卡洛方法定价。</p>
+
+        <div class="qa-set">
+          <h4>自测一下</h4>
+          <details class="qa"><summary>为什么风险中性概率 p 与股票真实上涨概率无关，定价却仍然正确？</summary><div class="qa-a">因为定价基于<b>复制</b>而非预测：Δ 份股票 + 现金的组合已完全复制期权 payoff，其成本是唯一无套利价格。p 只是让“股票预期收益 = r”成立的记账概率（等价鞅测度），复制关系本身不依赖真实概率。真实概率影响的是你“要不要买”，而不是“它值多少”。</div></details>
+          <details class="qa"><summary>卖出跨式组合（卖 call + 卖同价 put）的希腊字母敞口是什么？赚什么、怕什么？</summary><div class="qa-a">Delta 近似中性，<b>做空 Gamma、做空 Vega、做多 Theta</b>：赚标的不动时的时间价值衰减；怕价格大幅跳动（负 Gamma 亏损）与隐含波动率上升（负 Vega 亏损）。本质是“卖保险”头寸。</div></details>
+          <details class="qa"><summary>股指期权的隐含波动率曲线为什么向左偏斜（低行权价 IV 更高）？</summary><div class="qa-a">股市崩盘时呈负偏、肥尾，且崩盘与波动率飙升同步（杠杆效应）。虚值 put 恰好在崩盘中赔付，是尾部保险，需求旺盛，因此其隐含波动率被推高。BS 假设的对数正态低估了左尾概率，偏差就体现在偏斜上。</div></details>
+        </div>
+      </div>
+      <nav class="ch-pn"><a href="#ch6">← 上一章</a><span class="sp"></span><a href="#ch8">下一章：随机过程深化与利率模型 →</a></nav>
+    </section>
+
+    <!-- ============ 第 8 章 ============ -->
+    <section class="ch" id="ch8" data-num="08" data-title="随机过程深化与利率模型">
+      <header class="ch-head">
+        <h2><span class="chnum">第 8 章</span>随机过程深化与利率模型</h2>
+        <label class="done-toggle"><input type="checkbox" data-done="ch8"><span>已学完</span></label>
+      </header>
+      <div class="ch-body">
+        <div class="callout goal"><span class="co-t">🎯 本章学习目标</span>理解二次变差与伊藤引理的来源；建立风险中性测度与 Girsanov 变换的概念地图；了解 Vasicek / CIR / HJM 三类利率模型的特点。</div>
+
+        <h3>8.1 二次变差：½ 项的真正来源</h3>
+        <p>把 [0,T] 切成 n 份，布朗运动增量的平方和 ∑(ΔW)² 依概率收敛到 T（而不是像光滑函数那样收敛到 0）。这叫<b>二次变差</b>。它意味着布朗路径太粗糙：一阶近似不够用，泰勒展开必须保留二阶项——这就是伊藤公式里 ½f″·σ²S²·dt 的出处，也是“波动率本身有价值（Gamma 收益）”的数学根源。</p>
+
+        <h3>8.2 伊藤积分与伊藤引理</h3>
+        <p>伊藤积分 ∫θ·dW 定义为简单过程积分的均方极限（用区间<b>左端点</b>取值——不能预知未来，这正是交易的现实约束）。伊藤引理（第 2 章已给出形式）由此严格化。经典应用：对 f(S)=ln S 使用引理，</p>
+        <div class="formula">d(ln S) = ( μ − σ²/2 )·dt + σ·dW<span class="fm-note">这就是 GBM 的解与蒙特卡洛模拟公式 (μ−σ²/2)T + σ√T·Z 的来源。注意瞬时收益率 μ 与对数收益率的差别正是 −σ²/2（波动率拖累）。</span></div>
+
+        <h3>8.3 风险中性测度与 Girsanov 定理</h3>
+        <p>核心思想：同一批随机路径，可以配不同的“概率权重”（测度）。Girsanov 定理说：通过改变测度，可以把资产的真实漂移 μ 换成任何想要的位置——金融里选 r。<b>风险中性测度 Q</b> 下所有资产以无风险利率增长（贴现价格是鞅），于是：</p>
+        <div class="formula">V<sub>t</sub> = e<sup>−r(T−t)</sup>·E<sup>Q</sup>[ g(S<sub>T</sub>) | F<sub>t</sub> ]<span class="fm-note">衍生品价格 = 风险中性世界 payoff 期望的贴现。蒙特卡洛定价（第 9 章）就是这个公式的直接实现。真实概率 P 只在估计 σ 等参数时有用。</span></div>
+        <div class="callout tip"><span class="co-t">💡 建模顺序</span>先在真实测度 P 下描述世界（漂移、波动、跳跃），再用 Girsanov 变换到风险中性测度 Q 定价；或者反过来，直接在 Q 下写出动力学再校准到市场价格。两条路等价，工程上常用后者。</div>
+
+        <h3>8.4 利率模型三大家族</h3>
+        <div class="formula">Vasicek：dr = a·(b − r)·dt + σ·dW&emsp;（均值回复，可为负利率）<br>CIR：dr = a·(b − r)·dt + σ·√r·dW&emsp;（√r 保证 r ≥ 0）<span class="fm-note">a 为回复速度，b 为长期均值。两者都属于“仿射期限结构”类：零息债价格是 r 的指数仿射函数，有解析解，便于校准。</span></div>
+        <ul>
+          <li><b>均衡模型（Vasicek / CIR）：</b>从经济假设出发刻画短期利率，参数可由历史估计；适合宏观情景与长期产品。</li>
+          <li><b>无套利模型（HJM / LMM）：</b>直接以整条远期曲线为状态变量，保证精确拟合当前曲线；适合利率衍生品定价。HJM 框架下漂移由波动率结构决定；LMM（BGM）是其对数正态实现，与市场 cap 报价直接对接。</li>
+        </ul>
+        <p>选型逻辑：要对<b>曲线形变</b>做精细定价就上 HJM/LMM；要快速得到带解析解的均值回复模型就用 Vasicek/CIR。</p>
+
+        <h3>8.5 测度转换的实务视角</h3>
+        <p>除了风险中性测度，实务还有两个常用测度：<b>T 远期测度</b>（以 T 到期零息债为计价单位，利率产品 payoff 期望最方便）与<b>股票测度</b>（含红利的计价单位选择）。计价单位（numeraire）思想：任何资产价格除以计价单位后在对应测度下都是鞅——它统一了各类定价公式的推导，是进阶阅读（Shreve II）的主线。</p>
+
+        <div class="qa-set">
+          <h4>自测一下</h4>
+          <details class="qa"><summary>Vasicek 的缺陷 CIR 如何解决？各自代价是什么？</summary><div class="qa-a">Vasicek 允许利率为负（极端参数下甚至发散），且波动不随利率水平变化。CIR 在扩散项加 √r：r 接近 0 时波动趋零、无法穿越 0，保证非负。代价是 CIR 的解析解更复杂、校准更难，且强制的零下界在负利率时代反而不合实际。</div></details>
+          <details class="qa"><summary>“贴现后的资产价格在风险中性测度下是鞅”这句话在定价中如何使用？</summary><div class="qa-a">鞅意味着未来条件期望等于当前值：e<sup>−rt</sup>S<sub>t</sub> = E<sup>Q</sup>[e<sup>−rT</sup>S<sub>T</sub>|F<sub>t</sub>]。于是任何衍生品都可写成 payoff 在 Q 下的条件期望乘以贴现因子，得到唯一无套利价格——BS 公式、二叉树、蒙特卡洛都是这一原理的具体化。</div></details>
+        </div>
+      </div>
+      <nav class="ch-pn"><a href="#ch7">← 上一章</a><span class="sp"></span><a href="#ch9">下一章：数值方法与编程实现 →</a></nav>
+    </section>
+
+    <!-- ============ 第 9 章 ============ -->
+    <section class="ch" id="ch9" data-num="09" data-title="数值方法与编程实现">
+      <header class="ch-head">
+        <h2><span class="chnum">第 9 章</span>数值方法与编程实现</h2>
+        <label class="done-toggle"><input type="checkbox" data-done="ch9"><span>已学完</span></label>
+      </header>
+      <div class="ch-body">
+        <div class="callout goal"><span class="co-t">🎯 本章学习目标</span>掌握三大定价数值方法（树、蒙特卡洛、有限差分）的适用场景与误差特征；能用 Python 实现经典定价；了解校准与工程实践要点。</div>
+
+        <h3>9.1 树方法（二叉 / 三叉）</h3>
+        <p>离散时间、离散价格，倒推求解。优点：直观、天然支持<b>美式期权</b>（每个节点比较行权与持有价值）；缺点：收敛有锯齿（价格随步数振荡），高维时节点数爆炸。工程改进：取步数 2n+1 型奇数步、或用 Richardson 外推。</p>
+
+        <h3>9.2 蒙特卡洛：高维与路径依赖之王</h3>
+        <p>直接模拟风险中性测度下的路径，对 payoff 取期望贴现（第 8 章公式）。误差按 O(1/√N) 收敛：<b>精度提高 10 倍，计算量增加 100 倍</b>——所以方差缩减不是可选项而是必需品：</p>
+        <ul>
+          <li><b>对偶变量：</b>同时用 Z 和 −Z 模拟，平均后漂移项抵消，方差大降。</li>
+          <li><b>控制变量：</b>用已知解析解的量（如 GBM 终值）校正模拟误差。</li>
+          <li><b>重要性抽样 / 分层抽样：</b>把样本集中到对 payoff 重要的区域（深价外尾部）。</li>
+        </ul>
+        <p>蒙特卡洛的软肋是<b>美式期权</b>（需要逐点比较未来价值），经典解法是 Longstaff-Schwartz 最小二乘回归（LSM）。</p>
+
+        <h3>9.3 有限差分：解 PDE</h3>
+        <p>把 BS 偏微分方程 V<sub>t</sub> + ½σ²S²V<sub>SS</sub> + rSV<sub>S</sub> − rV = 0 在网格上离散。三种格式：<b>显式</b>（快但步长受稳定性约束，易爆）、<b>隐式</b>（无条件稳定，每步解线性方程组）、<b>Crank-Nicolson</b>（二阶精度、折中，常配合 Rannacher 平滑）。适合美式与低维问题；边界条件的处理（障碍、红利跳）是工程细节大头。</p>
+
+        <h3>9.4 Python 工具链与三个模板</h3>
+        <p>生态：numpy / pandas / scipy 做数值与数据，matplotlib 画图，QuantLib-Python 提供工业级定价与曲线构建，numba / Cython 加速循环。以下是三个可以直接跑通的模板：</p>
+        <pre><code># ① Black-Scholes 解析解 —— 永远先用解析解验证数值方法
+from math import log, sqrt, exp
+from scipy.stats import norm
+
+def bs_call(S, K, r, sigma, T):
+    d1 = (log(S/K) + (r + 0.5*sigma**2)*T) / (sigma*sqrt(T))
+    d2 = d1 - sigma*sqrt(T)
+    return S*norm.cdf(d1) - K*exp(-r*T)*norm.cdf(d2)
+
+print(bs_call(S=100, K=100, r=0.03, sigma=0.2, T=1.0))  # ≈ 9.41</code></pre>
+        <pre><code># ② 蒙特卡洛定价欧式看涨（含标准误）
+import numpy as np
+
+def mc_call(S0, K, r, sigma, T, n_paths=200_000, seed=42):
+    rng = np.random.default_rng(seed)
+    z = rng.standard_normal(n_paths)
+    ST = S0 * np.exp((r - 0.5*sigma**2)*T + sigma*np.sqrt(T)*z)  # GBM 解
+    payoff = np.maximum(ST - K, 0.0)
+    disc = np.exp(-r*T)
+    price = disc * payoff.mean()
+    se = disc * payoff.std(ddof=1) / np.sqrt(n_paths)   # 模拟误差
+    return price, se
+
+print(mc_call(S0=100, K=100, r=0.03, sigma=0.2, T=1.0))  # ≈ (9.41, ~0.07)</code></pre>
+        <pre><code># ③ CRR 二叉树：支持欧式 / 美式
+import numpy as np
+
+def crr_option(S0, K, r, sigma, T, n=200, kind='call', american=True):
+    dt = T / n
+    u, d = np.exp(sigma*np.sqrt(dt)), np.exp(-sigma*np.sqrt(dt))
+    p = (np.exp(r*dt) - d) / (u - d)          # 风险中性概率
+    disc = np.exp(-r*dt)
+    j = np.arange(n+1)
+    ST = S0 * u**(n-j) * d**j                  # 到期价格网格
+    V = np.maximum(ST - K, 0.0) if kind == 'call' else np.maximum(K - ST, 0.0)
+    for i in range(n-1, -1, -1):               # 倒推
+        V = disc * (p*V[:-1] + (1-p)*V[1:])
+        if american:
+            S = S0 * u**(i-np.arange(i+1)) * d**np.arange(i+1)
+            ex = np.maximum(S - K, 0.0) if kind == 'call' else np.maximum(K - S, 0.0)
+            V = np.maximum(V, ex)              # 美式：逐节点比较提前行权
+    return V[0]
+
+print(crr_option(100, 100, 0.03, 0.2, 1.0))                       # ≈ 9.41
+print(crr_option(100, 100, 0.03, 0.2, 1.0, kind='put'))           # 美式 put 略贵于欧式</code></pre>
+        <div class="callout tip"><span class="co-t">💡 工程守则</span>① 先写<b>对的慢代码</b>，再写快的对代码；② 数值方法一律用解析解做单元测试基准（上面的 BS 就是基准）；③ 向量化代替 Python 循环，随机数用固定种子保证可复现；④ 校准（反解隐含波动率、最小化模型价与市场价之差）是模型上线的真正难点。</div>
+
+        <div class="qa-set">
+          <h4>自测一下</h4>
+          <details class="qa"><summary>给 50 维篮子期权定价，选蒙特卡洛还是树 / 差分？为什么？</summary><div class="qa-a">蒙特卡洛。树与差分的节点数随维度<b>指数增长</b>（维数灾难），50 维完全不可行；蒙特卡洛误差只随维度多项式增长，且篮子是路径终值 payoff，天然适合模拟。缺点是需要处理相关结构（Cholesky 分解协方差矩阵）与稍大的方差。</div></details>
+          <details class="qa"><summary>蒙特卡洛想把定价误差从 0.1 降到 0.01，单纯加路径要付出什么代价？有什么替代？</summary><div class="qa-a">误差 ~1/√N，降低 10 倍需要 N 增加 100 倍。替代方案：方差缩减（对偶变量 / 控制变量 / 重要性抽样）、准蒙特卡洛（Sobol 等低差异序列，误差近 O(1/N)），或改用有解析解 / PDE 方法处理的部分。</div></details>
+        </div>
+      </div>
+      <nav class="ch-pn"><a href="#ch8">← 上一章</a><span class="sp"></span><a href="#ch10">下一章：风险管理与量化策略 →</a></nav>
+    </section>
+
+    <!-- ============ 第 10 章 ============ -->
+    <section class="ch" id="ch10" data-num="10" data-title="风险管理与量化策略">
+      <header class="ch-head">
+        <h2><span class="chnum">第 10 章</span>风险管理与量化策略</h2>
+        <label class="done-toggle"><input type="checkbox" data-done="ch10"><span>已学完</span></label>
+      </header>
+      <div class="ch-body">
+        <div class="callout goal"><span class="co-t">🎯 本章学习目标</span>掌握 VaR / ES 的三种计算方法与回测思路；理解希腊字母限额与对冲成本；了解量化策略全景与回测方法论；会用夏普、回撤等指标评价策略。</div>
+
+        <h3>10.1 市场风险：VaR 与 ES</h3>
+        <p><b>VaR（在险价值）：</b>在置信水平 α 与持有期 Δt 内的最大预期损失。<b>ES（预期损失）：</b>超过 VaR 的尾部条件平均损失，对尾部更敏感且满足一致性公理，巴塞尔协议 FRTB 已用 ES 取代 VaR。</p>
+        <div class="formula">VaR<sub>α</sub> ≈ V · z<sub>α</sub> · σ · √Δt&emsp;（零漂移正态近似；z<sub>0.95</sub>≈1.65，z<sub>0.99</sub>≈2.33）<span class="fm-note">例：1 亿元组合、日波动 1.5%、99% 置信、1 天持有期 → VaR ≈ 1 亿 × 2.33 × 1.5% ≈ 350 万。</span></div>
+        <p>三种计算路径：<b>历史模拟</b>（重放历史损益分布，无分布假设但对历史窗口敏感）、<b>方差-协方差法</b>（快，依赖正态假设、低估尾部）、<b>蒙特卡洛</b>（灵活纳入任意模型，慢且有模拟误差）。算出来还要<b>回测</b>：统计 VaR 被突破的次数是否符合置信水平（Kupiec 检验），并做压力测试回答“1998 / 2008 / 2020 那天我会怎样”。</p>
+
+        <h3>10.2 对冲与限额管理</h3>
+        <p>交易台的风险控制 = 希腊字母限额 + 情景限额：Delta 限额控制方向敞口，Gamma 限额控制跳动风险，Vega 限额控制波动率敞口，Theta 是收入的来源（卖波动率的“工资”）。动态对冲有再平衡频率与成本的权衡：对得越勤，Gamma 风险越小、交易成本越高。尾部对冲思想：用少量预算持续买入深度虚值 put 或做多波动率，为“肥尾日”买保险。</p>
+
+        <h3>10.3 量化策略全景</h3>
+        <ul>
+          <li><b>趋势 / 动量：</b>截断亏损、让利润奔跑；赚行为偏差与资金流动的钱。</li>
+          <li><b>均值回归 / 统计套利：</b>价差向均值回复；赚微观结构与非理性交易的钱，怕结构突变。</li>
+          <li><b>因子投资：</b>按价值 / 质量 / 动量等因子配置，赚风险溢价。</li>
+          <li><b>事件驱动 / 套利：</b>并购、指数调整、期现套利等确定性较高的机会。</li>
+          <li><b>做市 / 高频：</b>赚买卖价差与订单流信息，对延迟与成本极度敏感。</li>
+        </ul>
+        <p>标准流水线：<b>信号研究 → 组合构造（优化 / 风控约束）→ 回测 → 执行（成本模型、滑点）→ 实盘监控</b>。每一环都能杀死策略，尤其是后两环。</p>
+
+        <h3>10.4 回测方法论：如何不自欺</h3>
+        <div class="callout warn"><span class="co-t">⚠️ 回测四大杀手</span>① <b>前视偏差</b>：用了当时不可能知道的数据（财报实际公布日 vs 报告期）；② <b>幸存者偏差</b>：股票池只用现存公司，漏掉退市的；③ <b>过拟合</b>：参数调到样本内完美，样本外失效——用样本外 / 滚动前推检验与参数敏感性分析对抗；④ <b>忽略成本</b>：价差、冲击、保证金占用、借贷成本，一个都不能少。</div>
+        <p>纪律：先写好“我预期它为什么赚钱”的经济逻辑，再用数据验证；回测框架里交易信号与执行数据严格时点对齐；业绩归因区分 α 与运气。</p>
+
+        <h3>10.5 绩效评价</h3>
+        <div class="formula">Sharpe = ( R<sub>p</sub> − r<sub>f</sub> ) / σ<sub>p</sub>&emsp;Sortino = 超额收益 / 下行波动&emsp;Calmar = 年化收益 / 最大回撤<span class="fm-note">MDD（最大回撤）= max(1 − W<sub>t</sub>/max<sub>s≤t</sub>W<sub>s</sub>)。单看年化收益没有意义，永远结合波动与回撤看。</span></div>
+        <p>实战经验：夏普 &lt; 1 的日线策略大概率是噪音或过拟合；夏普 2 以上的回测先怀疑成本模型；统计显著性需要足够长的样本与多次独立信号。</p>
+
+        <div class="qa-set">
+          <h4>自测一下</h4>
+          <details class="qa"><summary>VaR 有什么已知缺陷？ES 如何弥补？</summary><div class="qa-a">VaR 只给出分位点，<b>不告诉你分位点之外亏多少</b>，且非次可加（两个组合合并后 VaR 可能变大，违背分散化直觉），对厚尾不敏感。ES 是尾部条件期望损失，满足一致性风险度量的次可加性，能刻画极端情形的平均严重程度，故被 FRTB 采纳。</div></details>
+          <details class="qa"><summary>一个回测年化 30%、夏普 3 的策略，你第一步应该检查什么？</summary><div class="qa-a">先查“作弊”来源：① 数据是否前视（用了未来信息）；② 成本是否真实计入（价差 / 冲击 / 滑点）；③ 样本是否过拟合（参数敏感性、样本外表现）；④ 是否有幸存者偏差；⑤ 收益是否集中在极少数交易 / 极端行情（统计显著性不足）。高夏普回测几乎总是以上之一。</div></details>
+          <details class="qa"><summary>为什么“卖期权”策略长期看像稳定赚钱，却可能一次亏光？如何管理？</summary><div class="qa-a">卖期权 = 收 Theta、扛尾部：多数时间赚取时间价值（高胜率），但负 Gamma / 负 Vega 意味着崩盘日亏损远超累计收益（“捡钢镚在压路机前”）。管理手段：仓位控制（Kelly 折半再折半）、硬止损与跳空风险评估、买尾部保险（虚值 put / VIX call）对冲、压力测试限额定生死。</div></details>
+        </div>
+      </div>
+      <nav class="ch-pn"><a href="#ch9">← 上一章</a><span class="sp"></span><a href="#appendix">下一章：学习路线与资源 →</a></nav>
+    </section>
+
+    <!-- ============ 附录 ============ -->
+    <section class="ch" id="appendix" data-num="附" data-title="附录：学习路线与资源">
+      <header class="ch-head">
+        <h2><span class="chnum">附录</span>学习路线与资源</h2>
+        <label class="done-toggle"><input type="checkbox" data-done="appendix"><span>已学完</span></label>
+      </header>
+      <div class="ch-body">
+        <h3>A.1 12 周学习计划（可按自己节奏伸缩）</h3>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>周次</th><th>主题</th><th>对应章节</th><th>里程碑（做完才算过关）</th></tr></thead>
+            <tbody>
+              <tr><td>1–2</td><td>数学地基 + 市场全景</td><td>第 1–3 章</td><td>能用自己的话解释无套利定价；手推泰勒展开与希腊字母的对应关系</td></tr>
+              <tr><td>3</td><td>固定收益</td><td>第 4 章</td><td>手工计算一只债券的 YTM、久期、凸性；理解曲线倒挂的含义</td></tr>
+              <tr><td>4</td><td>投资组合</td><td>第 5 章</td><td>用 Python 画出 3 资产有效前沿；会算 β 与风险贡献</td></tr>
+              <tr><td>5</td><td>远期与期货</td><td>第 6 章</td><td>独立推导持有成本公式；解释股指期货贴水</td></tr>
+              <tr><td>6–7</td><td>期权定价（重心）</td><td>第 7 章</td><td>推导买卖权平价与单期二叉树；默写 BS 公式并解释每个字母的金融含义</td></tr>
+              <tr><td>8</td><td>随机过程深化</td><td>第 8 章</td><td>用伊藤引理推导 d(ln S)；说清风险中性测度是什么、不是什么</td></tr>
+              <tr><td>9</td><td>数值方法</td><td>第 9 章</td><td>跑通三个模板代码；给欧式期权分别用 MC 与树定价并对比误差</td></tr>
+              <tr><td>10</td><td>风险与策略</td><td>第 10 章</td><td>实现历史模拟 VaR 并做回测；给一个回测结果挑出至少 3 个偏差</td></tr>
+              <tr><td>11</td><td>综合项目</td><td>第 7 + 9 + 10 章</td><td>完成小项目：选一只期权限定数据，定价 → 算希腊字母 → 设计对冲 → 评估成本</td></tr>
+              <tr><td>12</td><td>复盘与输出</td><td>全部</td><td>整理本页笔记、重做全部自测题、写一篇学习总结</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>A.2 书单（按阅读顺序）</h3>
+        <ul>
+          <li><b>Hull《期权、期货及其他衍生产品》</b>——行业圣经，第一主教材，覆盖第 3–10 章绝大部分内容。</li>
+          <li><b>郑振龙、陈蓉《金融工程》</b>——中文体系教材，可与 Hull 对照阅读。</li>
+          <li><b>Shreve《Stochastic Calculus for Finance I / II》</b>——二叉树到连续时间的严格路线，对应第 7–8 章的数学深化。</li>
+          <li><b>Joshi《The Concepts and Practice of Mathematical Finance》</b>——视角实务，补足“为什么这样建模”。</li>
+          <li><b>Grinold &amp; Kahn《Active Portfolio Management》</b>——主动管理 algebra，对应第 5、10 章。</li>
+          <li><b>Wilmott《Paul Wilmott Introduces Quantitative Finance》</b>——直觉最好的入门书之一，适合与 Hull 并行。</li>
+        </ul>
+
+        <h3>A.3 课程与认证</h3>
+        <ul>
+          <li><b>MIT OCW 18.S096《Topics in Mathematics with Applications in Finance》</b>——免费公开课，与本书结构高度互补。</li>
+          <li><b>Yale《Financial Markets》（Robert Shiller，Coursera）</b>——市场机制通识。</li>
+          <li><b>FRM：</b>风险管理职业认证，对应第 10 章内容体系；<b>CQF：</b>实务向量化金融证书；<b>CFA：</b>投资管理通才路线。按职业方向选，不必全考。</li>
+        </ul>
+
+        <h3>A.4 工具与数据</h3>
+        <ul>
+          <li><b>Python 3.11+：</b>numpy、pandas、scipy、matplotlib、statsmodels、QuantLib-Python、numba。</li>
+          <li><b>Jupyter / VS Code：</b>交互研究 + 工程化并行的环境。</li>
+          <li><b>数据源：</b>akshare / tushare / yfinance（练习用）、Wind / Bloomberg（机构）。</li>
+          <li><b>版本管理与文档：</b>git + 一份自己的“定价函数库”，随学习持续沉淀。</li>
+        </ul>
+
+        <h3>A.5 毕业自测清单</h3>
+        <ul>
+          <li>能从无套利出发独立推导 BS 公式的结构（不必每步细节）。</li>
+          <li>能解释“波动率微笑”给一个外行听懂。</li>
+          <li>能用 Python 在 20 分钟内写出一个新 payoff 的蒙特卡洛定价。</li>
+          <li>能指出任意一份回测报告里的至少三个方法论问题。</li>
+          <li>拥有一个自己的定价 / 回测小仓库，并配了基本单元测试。</li>
+        </ul>
+        <div class="callout tip"><span class="co-t">💡 最后的建议</span>金融工程是“学一小块、练一小块”的学科：每读完一章就写代码、做自测、在不懂的地方留下笔记并定期回来消化。笔记面板（右上角 📝）就是为这个循环设计的——让每一次困惑都变成可回顾的资产。</div>
+      </div>
+      <nav class="ch-pn"><a href="#ch10">← 上一章</a><span class="sp"></span><a href="#top">回到开始页 ↑</a></nav>
+    </section>
+
+    </div><!-- /#content -->
+  </main>
+</div>
+
+<!-- ================= 笔记面板 ================= -->
+<aside id="notesPanel" aria-label="笔记面板">
+  <div class="pn-head">
+    <h3>📝 我的笔记 <span class="cnt" id="pnCount">0</span></h3>
+    <button class="icon-btn" id="pnClose" aria-label="关闭笔记面板">✕</button>
+  </div>
+  <div class="pn-tools">
+    <div class="search"><input type="text" id="pnSearch" placeholder="搜索笔记内容 / 摘录 / 位置…"></div>
+    <div class="pn-row">
+      <div class="chips" id="pnTypeChips">
+        <button class="chip active" data-ft="all">全部</button>
+        <button class="chip" data-ft="key">⭐ 重点</button>
+        <button class="chip" data-ft="q">❓ 疑问</button>
+        <button class="chip" data-ft="note">📝 笔记</button>
+      </div>
+      <select id="pnCh" aria-label="按章节筛选"></select>
+      <span class="seg" id="pnSort">
+        <button class="seg-btn active" data-sort="ch">按章节</button>
+        <button class="seg-btn" data-sort="time">按时间</button>
+      </span>
+    </div>
+    <div id="pnBidChip" hidden><span>仅显示此位置的笔记</span><button id="pnBidClear" aria-label="清除位置筛选">✕</button></div>
+  </div>
+  <div id="pnList"></div>
+  <div class="pn-foot">
+    <button class="btn primary" id="pnAdd">＋ 新建笔记</button>
+    <span class="grow"></span>
+    <button class="btn" id="pnExport" title="下载 JSON 备份">导出</button>
+    <button class="btn" id="pnImportBtn" title="从 JSON 恢复">导入</button>
+    <button class="btn danger" id="pnClear">清空</button>
+    <input type="file" id="pnImportFile" accept=".json,application/json" hidden>
+  </div>
+</aside>
+
+<!-- ================= 笔记编辑弹窗 ================= -->
+<div id="editorWrap" role="dialog" aria-modal="true" aria-label="笔记编辑">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="edTitle">添加笔记</h3>
+      <button class="icon-btn" id="edClose" aria-label="关闭">✕</button>
+    </div>
+    <div class="ed-meta" id="edMeta"></div>
+    <blockquote id="edQuote" hidden></blockquote>
+    <div class="chips" id="edTypes">
+      <button class="chip" data-type="key">⭐ 重点</button>
+      <button class="chip" data-type="q">❓ 疑问</button>
+      <button class="chip" data-type="note">📝 笔记</button>
+    </div>
+    <textarea id="edText" placeholder="写下你的理解、疑问或补充…（支持多行）"></textarea>
+    <div class="ed-actions">
+      <button class="btn danger" id="edDelete" hidden>删除</button>
+      <span class="grow"></span>
+      <button class="btn ghost" id="edCancel">取消</button>
+      <button class="btn primary" id="edSave">保存</button>
+    </div>
+  </div>
+</div>
+
+<button id="selBtn">＋ 添加笔记</button>
+<button id="blkBtn" title="对这一段做笔记" aria-label="对这一段做笔记">＋</button>
+<button id="backTop" aria-label="回到顶部" title="回到顶部">↑</button>
+<div id="toast"></div>
+
+<noscript><div style="padding:20px;text-align:center;color:#b91c1c">本页的笔记、进度与交互功能需要启用 JavaScript 才能使用。</div></noscript>
+
+<script>
+(function(){
+'use strict';
+/* ---------- 工具 ---------- */
+var LS_KEY='feStudy.v1';
+function $(s,c){return (c||document).querySelector(s);}
+function $$(s,c){return Array.prototype.slice.call((c||document).querySelectorAll(s));}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch];});}
+function pad(n){return n<10?'0'+n:''+n;}
+function fmtTime(ts){var d=new Date(ts);return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+' '+pad(d.getHours())+':'+pad(d.getMinutes());}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8);}
+function debounce(fn,ms){var t=null;return function(){var args=arguments,self=this;clearTimeout(t);t=setTimeout(function(){fn.apply(self,args);},ms);};}
+
+var TYPES={key:{label:'重点',cls:'t-key'},q:{label:'疑问',cls:'t-q'},note:{label:'笔记',cls:'t-note'}};
+
+/* ---------- 状态 ---------- */
+var store={notes:[],done:{},lastCh:null,scrollTop:0,theme:'light'};
+var ui={panelOpen:false,sidebarOpen:false,filters:{q:'',type:'all',ch:'all',bid:null},sortBy:'ch',editingId:null,draft:null,selType:'note',activeCh:null};
+
+function load(){
+  try{ var raw=localStorage.getItem(LS_KEY); if(raw){ var d=JSON.parse(raw); if(d&&typeof d==='object'){ store.notes=Array.isArray(d.notes)?d.notes:[]; store.done=d.done||{}; store.lastCh=d.lastCh||null; store.scrollTop=+d.scrollTop||0; store.theme=d.theme||'light'; } } }catch(e){}
+}
+function save(){ try{ localStorage.setItem(LS_KEY,JSON.stringify(store)); }catch(e){} }
+
+/* ---------- 章节与区块 ---------- */
+var sections=$$('#content section.ch');
+var chOrder={};
+sections.forEach(function(s,i){ chOrder[s.id]=i; });
+function chTitle(id){ var s=document.getElementById(id); return s?s.getAttribute('data-title'):''; }
+
+function assignBlocks(){
+  var SEL='#content p, #content li, #content h3, #content h4, #content .formula, #content .callout, #content pre, #content details.qa, #content .tbl-wrap';
+  var counter={};
+  $$(SEL).forEach(function(el){
+    var sec=el.closest('section.ch');
+    var base=sec?sec.id:'x';
+    counter[base]=(counter[base]||0)+1;
+    el.setAttribute('data-bid',base+'-'+counter[base]);
+  });
+}
+function nearestHeading(el){
+  var n=el;
+  while(n&&n.classList&&!n.classList.contains('ch')){
+    var p=n.previousElementSibling;
+    while(p){ if(/^(H[2-4])$/.test(p.tagName))return p.textContent.trim(); p=p.previousElementSibling; }
+    n=n.parentElement;
+  }
+  return '';
+}
+
+/* ---------- 高亮 ---------- */
+function clearOneMark(id){
+  $$('mark.note-hl[data-note-id="'+id+'"]').forEach(function(m){
+    var p=m.parentNode; if(!p)return;
+    while(m.firstChild)p.insertBefore(m.firstChild,m);
+    p.removeChild(m); p.normalize();
+  });
+}
+function clearHighlights(){ $$('mark.note-hl').forEach(function(m){ var id=m.getAttribute('data-note-id'); clearOneMark(id); }); }
+function tryWrap(blockEl,quote,noteId,type){
+  if(!blockEl||!quote)return false;
+  var cands=[quote,quote.slice(0,160),quote.slice(0,80),quote.slice(0,40)].filter(function(q){return q&&q.length>=8;});
+  if(!cands.length)return false;
+  var walker=document.createTreeWalker(blockEl,NodeFilter.SHOW_TEXT,{acceptNode:function(n){
+    if(!n.nodeValue||!n.nodeValue.trim())return NodeFilter.FILTER_REJECT;
+    if(n.parentElement&&n.parentElement.closest('mark.note-hl'))return NodeFilter.FILTER_REJECT;
+    return NodeFilter.FILTER_ACCEPT;
+  }});
+  var node;
+  while((node=walker.nextNode())){
+    for(var i=0;i<cands.length;i++){
+      var q=cands[i],idx=node.nodeValue.indexOf(q);
+      if(idx>=0){
+        try{
+          var r=document.createRange(); r.setStart(node,idx); r.setEnd(node,idx+q.length);
+          var m=document.createElement('mark'); m.className='note-hl';
+          m.setAttribute('data-note-id',noteId); m.setAttribute('data-type',type);
+          r.surroundContents(m); return true;
+        }catch(e){}
+      }
+    }
+  }
+  return false;
+}
+function applyNoteHighlight(n){
+  if(!n.bid)return false;
+  var b=document.querySelector('[data-bid="'+n.bid+'"]');
+  if(!b)return false;
+  return tryWrap(b,n.quote,n.id,n.type||'note');
+}
+function rebuildHighlights(){ clearHighlights(); store.notes.forEach(applyNoteHighlight); refreshPins(); }
+function refreshPins(){
+  $$('#content [data-bid].has-note').forEach(function(el){el.classList.remove('has-note');});
+  store.notes.forEach(function(n){
+    if(!n.bid)return;
+    var b=document.querySelector('[data-bid="'+n.bid+'"]');
+    if(b&&!b.querySelector('mark.note-hl')) b.classList.add('has-note');
+  });
+}
+function updateMarkType(n){
+  $$('mark.note-hl[data-note-id="'+n.id+'"]').forEach(function(m){m.setAttribute('data-type',n.type);});
+}
+
+/* ---------- 目录 / 进度 ---------- */
+function buildNav(){
+  var html='<li><a href="#top" data-nav="top"><span class="nav-num">首</span><span class="nav-t">开始与使用指南</span><span class="nav-check">✓</span></a></li>';
+  html+=sections.map(function(s){
+    var done=store.done[s.id]?' on':'';
+    return '<li><a href="#'+s.id+'" data-nav="'+s.id+'"><span class="nav-num">'+esc(s.getAttribute('data-num'))+'</span><span class="nav-t">'+esc(s.getAttribute('data-title'))+'</span><span class="nav-check'+done+'">✓</span></a></li>';
+  }).join('');
+  $('#navList').innerHTML=html;
+}
+function updateProgress(){
+  var total=sections.length,done=0;
+  sections.forEach(function(s){ if(store.done[s.id])done++; });
+  $('#progText').textContent=done+' / '+total;
+  $('#progBar').style.width=(total?Math.round(done/total*100):0)+'%';
+  $$('#navList a[data-nav]').forEach(function(a){
+    var id=a.getAttribute('data-nav'),c=$('.nav-check',a);
+    if(c&&id!=='top') c.classList.toggle('on',!!store.done[id]);
+  });
+}
+function syncDoneChecks(){
+  $$('input[data-done]').forEach(function(cb){cb.checked=!!store.done[cb.getAttribute('data-done')];});
+}
+function buildChSelect(){
+  var sel=$('#pnCh');
+  sel.innerHTML='<option value="all">全部章节</option>'+sections.map(function(s){
+    return '<option value="'+s.id+'">'+esc(s.getAttribute('data-num'))+' · '+esc(s.getAttribute('data-title'))+'</option>';
+  }).join('');
+}
+
+/* ---------- 侧栏 / 面板开关 ---------- */
+function refreshScrollLock(){
+  var modal=$('#editorWrap').classList.contains('open');
+  var narrow=window.matchMedia('(max-width:960px)').matches;
+  document.body.classList.toggle('lock',modal||(narrow&&(ui.panelOpen||ui.sidebarOpen)));
+}
+function openSidebar(){ui.sidebarOpen=true;$('#sidebar').classList.add('open');$('#scrim').classList.add('show');refreshScrollLock();}
+function closeSidebar(){ui.sidebarOpen=false;$('#sidebar').classList.remove('open');$('#scrim').classList.remove('show');refreshScrollLock();}
+function openPanel(opts){
+  opts=opts||{};
+  if(opts.bid!==undefined)ui.filters.bid=opts.bid;
+  if(opts.ch)ui.filters.ch=opts.ch;
+  ui.panelOpen=true;
+  $('#notesPanel').classList.add('open');
+  if(window.matchMedia('(max-width:960px)').matches)$('#scrim').classList.add('show');
+  syncPanelControls(); renderNotes(); refreshScrollLock();
+}
+function closePanel(){
+  ui.panelOpen=false;
+  $('#notesPanel').classList.remove('open');
+  if(!ui.sidebarOpen)$('#scrim').classList.remove('show');
+  refreshScrollLock();
+}
+
+/* ---------- 笔记列表 ---------- */
+function filteredNotes(){
+  var f=ui.filters;
+  var arr=store.notes.filter(function(n){
+    if(f.bid&&n.bid!==f.bid)return false;
+    if(f.ch!=='all'&&n.ch!==f.ch)return false;
+    if(f.type!=='all'&&n.type!==f.type)return false;
+    if(f.q){
+      var q=f.q.toLowerCase();
+      var hay=((n.text||'')+' '+(n.quote||'')+' '+(n.where||'')).toLowerCase();
+      if(hay.indexOf(q)<0)return false;
+    }
+    return true;
+  });
+  if(ui.sortBy==='time') arr.sort(function(a,b){return b.created-a.created;});
+  else arr.sort(function(a,b){return (chOrder[a.ch]!==undefined?chOrder[a.ch]:99)-(chOrder[b.ch]!==undefined?chOrder[b.ch]:99)||a.created-b.created;});
+  return arr;
+}
+function cardHTML(n){
+  var t=TYPES[n.type]||TYPES.note;
+  var edited=(n.updated-n.created>60000)?' · 已编辑':'';
+  return '<article class="note-card '+t.cls+'" data-id="'+n.id+'">'
+    +'<div class="nc-top"><span class="badge '+t.cls+'">'+t.label+'</span><span class="nc-ch">'+esc(chTitle(n.ch)||'—')+'</span><span class="nc-time">'+fmtTime(n.created)+edited+'</span></div>'
+    +(n.quote?'<blockquote class="nc-quote">'+esc(n.quote)+'</blockquote>':'')
+    +(n.where?'<div class="nc-where">📍 '+esc(n.where)+'</div>':'')
+    +'<div class="nc-text">'+esc(n.text)+'</div>'
+    +'<div class="nc-acts"><button class="mini" data-act="jump">跳转原文</button><button class="mini" data-act="edit">编辑</button><button class="mini danger" data-act="del">删除</button></div>'
+    +'</article>';
+}
+function renderNotes(){
+  var arr=filteredNotes();
+  $('#pnCount').textContent=String(store.notes.length);
+  var badge=$('#noteBadge');
+  badge.textContent=String(store.notes.length);
+  badge.hidden=store.notes.length===0;
+  $('#pnBidChip').hidden=!ui.filters.bid;
+  var list=$('#pnList'),keep=list.scrollTop;
+  if(!arr.length){
+    list.innerHTML='<div class="pn-empty">'+(store.notes.length?'没有匹配的笔记。<br>试试调整搜索词或筛选条件。':'还没有笔记。<br>在正文中选中一段文字，点击浮出的「＋ 添加笔记」试试。')+'</div>';
+    return;
+  }
+  var html='';
+  if(ui.sortBy==='ch'){
+    var groups={};
+    arr.forEach(function(n){(groups[n.ch]=groups[n.ch]||[]).push(n);});
+    Object.keys(chOrder).concat(['other']).forEach(function(ch){
+      var g=groups[ch]; if(!g)return;
+      html+='<div class="pn-group"><div class="pn-group-h">'+esc(chTitle(ch)||'其他位置')+'<span>'+g.length+'</span></div>'+g.map(cardHTML).join('')+'</div>';
+    });
+  }else{
+    html=arr.map(cardHTML).join('');
+  }
+  list.innerHTML=html;
+  list.scrollTop=keep;
+}
+function syncPanelControls(){
+  $('#pnSearch').value=ui.filters.q;
+  $$('#pnTypeChips .chip').forEach(function(c){c.classList.toggle('active',c.getAttribute('data-ft')===ui.filters.type);});
+  $('#pnCh').value=ui.filters.ch;
+  $$('#pnSort .seg-btn').forEach(function(b){b.classList.toggle('active',b.getAttribute('data-sort')===ui.sortBy);});
+  $('#pnBidChip').hidden=!ui.filters.bid;
+}
+
+/* ---------- 跳转 ---------- */
+function jumpToNote(n){
+  if(window.matchMedia('(max-width:960px)').matches)closePanel();
+  var target=n.bid?document.querySelector('[data-bid="'+n.bid+'"]'):document.getElementById(n.ch);
+  if(!target)return;
+  target.scrollIntoView({behavior:'smooth',block:'center'});
+  target.classList.add('flash');
+  setTimeout(function(){target.classList.remove('flash');},1800);
+}
+
+/* ---------- 编辑弹窗 ---------- */
+function setType(t){
+  ui.selType=TYPES[t]?t:'note';
+  $$('#edTypes .chip').forEach(function(c){c.classList.toggle('active',c.getAttribute('data-type')===ui.selType);});
+}
+function openEditorNew(p){
+  p=p||{};
+  ui.editingId=null;
+  ui.draft={ch:p.ch||store.lastCh||sections[0].id,bid:p.bid||null,quote:p.quote||'',where:p.where||''};
+  $('#edTitle').textContent='添加笔记';
+  var d=ui.draft;
+  $('#edMeta').textContent=(chTitle(d.ch)||'')+(d.where?(' · '+d.where):'');
+  var q=$('#edQuote');
+  if(d.quote){q.hidden=false;q.textContent='「'+d.quote+'」';}else q.hidden=true;
+  $('#edText').value='';
+  setType(p.type||'note');
+  $('#edDelete').hidden=true;
+  $('#editorWrap').classList.add('open');
+  refreshScrollLock();
+  setTimeout(function(){$('#edText').focus();},80);
+}
+function openEditorEdit(id){
+  var n=null;
+  for(var i=0;i<store.notes.length;i++)if(store.notes[i].id===id){n=store.notes[i];break;}
+  if(!n)return;
+  ui.editingId=id; ui.draft=null;
+  $('#edTitle').textContent='编辑笔记';
+  $('#edMeta').textContent=(chTitle(n.ch)||'')+(n.where?(' · '+n.where):'');
+  var q=$('#edQuote');
+  if(n.quote){q.hidden=false;q.textContent='「'+n.quote+'」';}else q.hidden=true;
+  $('#edText').value=n.text;
+  setType(n.type);
+  $('#edDelete').hidden=false;
+  $('#editorWrap').classList.add('open');
+  refreshScrollLock();
+  setTimeout(function(){$('#edText').focus();},80);
+}
+function closeEditor(){
+  $('#editorWrap').classList.remove('open');
+  ui.editingId=null; ui.draft=null;
+  refreshScrollLock();
+}
+function saveEditor(){
+  var text=$('#edText').value.trim();
+  if(!text){toast('先写点内容再保存哦');return;}
+  if(ui.editingId){
+    var n=null;
+    for(var i=0;i<store.notes.length;i++)if(store.notes[i].id===ui.editingId){n=store.notes[i];break;}
+    if(n){ n.text=text; n.type=ui.selType; n.updated=Date.now(); updateMarkType(n); }
+  }else if(ui.draft){
+    var now=Date.now();
+    store.notes.push({id:uid(),ch:ui.draft.ch||'ch1',bid:ui.draft.bid||null,quote:ui.draft.quote||'',where:ui.draft.where||'',text:text,type:ui.selType,created:now,updated:now});
+    var nn=store.notes[store.notes.length-1];
+    applyNoteHighlight(nn);
+    refreshPins();
+  }
+  save(); renderNotes(); closeEditor(); toast('已保存 ✓');
+}
+function deleteNote(id){
+  if(!confirm('确定删除这条笔记吗？'))return;
+  store.notes=store.notes.filter(function(n){return n.id!==id;});
+  save(); clearOneMark(id); refreshPins(); renderNotes();
+  if(ui.editingId===id)closeEditor();
+  toast('已删除');
+}
+
+/* ---------- 选区 / 区块快捷笔记 ---------- */
+var selBtn=$('#selBtn'),blkBtn=$('#blkBtn');
+function currentSelectionInContent(){
+  var sel=window.getSelection?window.getSelection():null;
+  if(!sel||sel.isCollapsed||sel.rangeCount===0)return null;
+  var text=sel.toString().replace(/\s+/g,' ').trim();
+  if(!text)return null;
+  var range=sel.getRangeAt(0);
+  var sc=range.startContainer;
+  var el=(sc.nodeType===1)?sc:(sc.parentElement||sc.parentNode);
+  if(!el||!el.closest)return null;
+  if(!el.closest('#content'))return null;
+  return {text:text,block:el.closest('[data-bid]'),sec:el.closest('section.ch')};
+}
+function showSelBtn(){
+  if($('#editorWrap').classList.contains('open')){selBtn.classList.remove('show');return;}
+  var s=currentSelectionInContent();
+  if(!s){selBtn.classList.remove('show');return;}
+  ui.draft={ch:(s.sec?s.sec.id:(store.lastCh||sections[0].id)),bid:(s.block?s.block.getAttribute('data-bid'):null),quote:s.text.slice(0,400),where:(s.block?nearestHeading(s.block):'')||(s.sec?s.sec.getAttribute('data-title'):'')};
+  if(window.matchMedia('(pointer: coarse)').matches){
+    selBtn.classList.add('as-bottom');
+  }else{
+    selBtn.classList.remove('as-bottom');
+    var rect=window.getSelection().getRangeAt(0).getBoundingClientRect();
+    var x=Math.min(rect.left+rect.width/2,window.innerWidth-80);
+    var y=rect.top-48;
+    if(y<70)y=rect.bottom+12;
+    selBtn.style.left=x+'px'; selBtn.style.top=y+'px';
+  }
+  selBtn.classList.add('show');
+}
+var onSelChange=debounce(showSelBtn,160);
+document.addEventListener('selectionchange',onSelChange);
+document.addEventListener('mouseup',function(){setTimeout(showSelBtn,0);});
+selBtn.addEventListener('pointerdown',function(e){e.preventDefault();});
+selBtn.addEventListener('click',function(){
+  if(!ui.draft)return;
+  var d=ui.draft;
+  selBtn.classList.remove('show');
+  if(window.getSelection)window.getSelection().removeAllRanges();
+  openEditorNew(d);
+});
+blkBtn.addEventListener('click',function(){
+  if(!blkBtn._bid)return;
+  var b=document.querySelector('[data-bid="'+blkBtn._bid+'"]');
+  if(!b)return;
+  var sec=b.closest('section.ch');
+  openEditorNew({ch:sec?sec.id:(store.lastCh||sections[0].id),bid:blkBtn._bid,quote:'',where:nearestHeading(b)||(sec?sec.getAttribute('data-title'):'')});
+});
+if(window.matchMedia('(pointer: fine)').matches){
+  var contentEl=$('#content');
+  contentEl.addEventListener('mouseover',function(e){
+    var t=e.target.closest?e.target.closest('[data-bid]'):null;
+    if(!t){blkBtn.classList.remove('show');blkBtn._bid=null;return;}
+    var bid=t.getAttribute('data-bid');
+    if(bid===blkBtn._bid)return;
+    blkBtn._bid=bid;
+    var r=t.getBoundingClientRect();
+    blkBtn.style.left=Math.max(4,r.left-34)+'px';
+    blkBtn.style.top=(r.top+2)+'px';
+    blkBtn.classList.add('show');
+  });
+  contentEl.addEventListener('mouseleave',function(){blkBtn.classList.remove('show');});
+}
+
+/* ---------- 正文点击：高亮 / 勾选 ---------- */
+$('#content').addEventListener('click',function(e){
+  var m=e.target.closest('mark.note-hl');
+  if(m){openEditorEdit(m.getAttribute('data-note-id'));return;}
+  var b=e.target.closest('[data-bid].has-note');
+  if(b){openPanel({bid:b.getAttribute('data-bid')});return;}
+});
+$('#content').addEventListener('change',function(e){
+  var cb=e.target;
+  if(!cb||!cb.matches||!cb.matches('input[data-done]'))return;
+  var id=cb.getAttribute('data-done');
+  if(cb.checked)store.done[id]=1; else delete store.done[id];
+  save(); updateProgress();
+  toast(cb.checked?'已标记本章学完 ✓':'已取消完成标记');
+});
+
+/* ---------- 滚动：spy + 位置记忆 ---------- */
+function setActive(id){
+  ui.activeCh=id;
+  if(id&&id!=='top')store.lastCh=id;
+  $$('#navList a[data-nav]').forEach(function(a){a.classList.toggle('active',a.getAttribute('data-nav')===id);});
+}
+var ioSupported=('IntersectionObserver' in window);
+var spyTicking=false;
+function spyFallback(){
+  var pos=window.scrollY+140,cur='top';
+  if(document.getElementById('top')&&document.getElementById('top').offsetTop<=pos)cur='top';
+  sections.forEach(function(s){ if(s.offsetTop<=pos)cur=s.id; });
+  if(window.scrollY<80)cur='top';
+  setActive(cur);
+}
+function initSpy(){
+  if(ioSupported){
+    var io=new IntersectionObserver(function(entries){
+      entries.forEach(function(en){ if(en.isIntersecting)setActive(en.target.id); });
+    },{rootMargin:'-35% 0px -55% 0px',threshold:0});
+    var hero=document.getElementById('top');
+    if(hero)io.observe(hero);
+    sections.forEach(function(s){io.observe(s);});
+  }
+}
+var scrollTicking=false;
+window.addEventListener('scroll',function(){
+  if(scrollTicking)return;
+  scrollTicking=true;
+  requestAnimationFrame(function(){
+    scrollTicking=false;
+    selBtn.classList.remove('show');
+    blkBtn.classList.remove('show');
+    $('#backTop').classList.toggle('show',window.scrollY>700);
+    if(!ioSupported){ if(!spyTicking){spyTicking=true;requestAnimationFrame(function(){spyTicking=false;spyFallback();});} }
+  });
+},{passive:true});
+$('#backTop').addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});
+setInterval(function(){
+  if(ui.activeCh&&ui.activeCh!=='top')store.lastCh=ui.activeCh;
+  store.scrollTop=window.scrollY;
+  save();
+},3000);
+
+/* ---------- 主题 ---------- */
+function applyTheme(){
+  var t=store.theme==='dark'?'dark':'light';
+  document.documentElement.setAttribute('data-theme',t);
+  $('#themeBtn').textContent=t==='dark'?'☀️':'🌙';
+}
+
+/* ---------- toast ---------- */
+var toastTimer=null;
+function toast(msg){
+  var t=$('#toast');
+  t.textContent=msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(function(){t.classList.remove('show');},2200);
+}
+
+/* ---------- 导出 / 导入 / 清空 ---------- */
+function exportNotes(){
+  try{
+    var blob=new Blob([JSON.stringify(store,null,2)],{type:'application/json'});
+    var a=document.createElement('a');
+    var d=new Date();
+    a.href=URL.createObjectURL(blob);
+    a.download='fe-notes-'+d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate())+'.json';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function(){URL.revokeObjectURL(a.href);},1500);
+    toast('已导出备份文件 ✓');
+  }catch(e){toast('导出失败');}
+}
+$('#pnExport').addEventListener('click',exportNotes);
+$('#pnImportBtn').addEventListener('click',function(){$('#pnImportFile').click();});
+$('#pnImportFile').addEventListener('change',function(e){
+  var f=e.target.files&&e.target.files[0];
+  this.value='';
+  if(!f)return;
+  var rd=new FileReader();
+  rd.onload=function(){
+    try{
+      var data=JSON.parse(rd.result);
+      var raw=Array.isArray(data)?data:(data&&Array.isArray(data.notes)?data.notes:null);
+      if(!raw)throw new Error('bad');
+      var valid=raw.filter(function(n){return n&&typeof n==='object'&&typeof n.text==='string'&&n.text.trim();}).map(function(n){
+        var nid=String(n.id||'').replace(/[^a-zA-Z0-9_-]/g,'')||uid();
+        return {id:nid,ch:String(n.ch||'ch1'),bid:n.bid?String(n.bid):null,quote:String(n.quote||''),text:String(n.text),type:TYPES[n.type]?n.type:'note',where:String(n.where||''),created:+n.created||Date.now(),updated:+n.updated||+n.created||Date.now()};
+      });
+      if(!valid.length){toast('文件中没有有效笔记');return;}
+      if(!confirm('将导入 '+valid.length+' 条笔记（按 ID 与现有笔记合并），继续吗？'))return;
+      var have={};
+      store.notes.forEach(function(n){have[n.id]=1;});
+      var added=0;
+      valid.forEach(function(n){ if(!have[n.id]){store.notes.push(n);added++;} });
+      save(); rebuildHighlights(); renderNotes();
+      toast(added?('已导入 '+added+' 条笔记 ✓'):'没有新增笔记（可能已存在）');
+    }catch(err){ toast('导入失败：文件格式不正确'); }
+  };
+  rd.readAsText(f);
+});
+$('#pnClear').addEventListener('click',function(){
+  if(!store.notes.length){toast('当前没有笔记');return;}
+  if(!confirm('确定清空全部 '+store.notes.length+' 条笔记吗？此操作不可恢复（建议先导出备份）。'))return;
+  if(!confirm('再次确认：真的要清空吗？'))return;
+  store.notes=[];
+  save(); clearHighlights(); refreshPins(); renderNotes();
+  toast('已清空全部笔记');
+});
+
+/* ---------- 绑定 UI ---------- */
+$('#menuBtn').addEventListener('click',function(){ ui.sidebarOpen?closeSidebar():openSidebar(); });
+$('#scrim').addEventListener('click',function(){ closeSidebar(); closePanel(); });
+$('#topNotesBtn').addEventListener('click',function(){ if(ui.panelOpen){closePanel();}else{openPanel({bid:null});} });
+$('#pnClose').addEventListener('click',closePanel);
+$('#themeBtn').addEventListener('click',function(){ store.theme=store.theme==='dark'?'light':'dark'; save(); applyTheme(); });
+$('#navList').addEventListener('click',function(e){
+  if(e.target.closest('a')&&window.matchMedia('(max-width:960px)').matches)closeSidebar();
+});
+$('#pnSearch').addEventListener('input',debounce(function(){ui.filters.q=$('#pnSearch').value.trim();renderNotes();},180));
+$$('#pnTypeChips .chip').forEach(function(c){
+  c.addEventListener('click',function(){
+    ui.filters.type=c.getAttribute('data-ft');
+    $$('#pnTypeChips .chip').forEach(function(x){x.classList.toggle('active',x===c);});
+    renderNotes();
+  });
+});
+$('#pnCh').addEventListener('change',function(){ui.filters.ch=this.value;renderNotes();});
+$$('#pnSort .seg-btn').forEach(function(b){
+  b.addEventListener('click',function(){
+    ui.sortBy=b.getAttribute('data-sort');
+    $$('#pnSort .seg-btn').forEach(function(x){x.classList.toggle('active',x===b);});
+    renderNotes();
+  });
+});
+$('#pnBidClear').addEventListener('click',function(){ui.filters.bid=null;syncPanelControls();renderNotes();});
+$('#pnAdd').addEventListener('click',function(){
+  if(window.matchMedia('(max-width:960px)').matches)closePanel();
+  openEditorNew({ch:store.lastCh||sections[0].id,bid:null,quote:'',where:''});
+});
+$('#pnList').addEventListener('click',function(e){
+  var b=e.target.closest('button[data-act]');
+  if(!b)return;
+  var card=b.closest('.note-card');
+  var id=card?card.getAttribute('data-id'):null;
+  var n=null;
+  for(var i=0;i<store.notes.length;i++)if(store.notes[i].id===id){n=store.notes[i];break;}
+  if(!n)return;
+  var act=b.getAttribute('data-act');
+  if(act==='jump')jumpToNote(n);
+  else if(act==='edit')openEditorEdit(id);
+  else if(act==='del')deleteNote(id);
+});
+$$('#edTypes .chip').forEach(function(c){
+  c.addEventListener('click',function(){setType(c.getAttribute('data-type'));});
+});
+$('#edSave').addEventListener('click',saveEditor);
+$('#edCancel').addEventListener('click',closeEditor);
+$('#edClose').addEventListener('click',closeEditor);
+$('#edDelete').addEventListener('click',function(){ if(ui.editingId)deleteNote(ui.editingId); });
+$('#editorWrap').addEventListener('click',function(e){ if(e.target===this)closeEditor(); });
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){
+    if($('#editorWrap').classList.contains('open'))closeEditor();
+    else if(ui.panelOpen)closePanel();
+    else if(ui.sidebarOpen)closeSidebar();
+  }
+});
+window.addEventListener('resize',refreshScrollLock);
+
+/* ---------- 启动 ---------- */
+load();
+assignBlocks();
+buildNav();
+buildChSelect();
+syncDoneChecks();
+updateProgress();
+applyTheme();
+rebuildHighlights();
+initSpy();
+renderNotes();
+setTimeout(function(){
+  var hash=window.location.hash;
+  if(hash&&document.querySelector(hash)){ document.querySelector(hash).scrollIntoView(); return; }
+  if(store.lastCh&&store.scrollTop>60){ window.scrollTo(0,store.scrollTop); }
+},80);
+})();
+</script>
+</body>
+</html>
